@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootCardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginEnd="8dp"
+    android:background="@color/whiteCard"
+    android:backgroundTint="@color/whiteCard"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/rootConstraint"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/whiteCard">
+
+        <TextView
+            android:id="@+id/textViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/whiteCard"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="TITLE" />
+
+        <TextView
+            android:id="@+id/textViewContent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@color/whiteCard"
+            android:maxHeight="150dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/textViewTitle"
+            app:layout_constraintTop_toBottomOf="@id/textViewTitle"
+            tools:text="My name is Nichita i am pro deeveloper and i want to join to Yandex Team...My name is Nichita i am pro deeveloper and i want to join to Yandex Team...My name is Nichita i am pro deeveloper and i want to join to Yandex Team...My name is Nichita i am pro deeveloper and i want to join to Yandex Team...My name is Nichita i am pro deeveloper and i want to join to Yandex Team...My name is Nichita i am pro deeveloper and i want to join to Yandex Team...My name is Nichita i am pro deeveloper and i want to join to Yandex Team...My name is Nichita i am pro deeveloper and i want to join to Yandex Team...My name is Nichita i am pro deeveloper and i want to join to Yandex Team...My name is Nichita i am pro deeveloper and i want to join to Yandex Team..." />
+
+        <TextView
+            android:id="@+id/textViewDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="6dp"
+            android:background="@color/whiteCard"
+            android:textColor="@color/grayText"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/textViewContent"
+            app:layout_constraintTop_toBottomOf="@id/textViewContent"
+            tools:text="12 yanvaria sego goda" />
+
+        <ImageView
+            android:id="@+id/imageViewColorIndicator"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="16dp"
+            android:background="@color/whiteCard"
+            android:src="@drawable/ic_mark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/grayIcon" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

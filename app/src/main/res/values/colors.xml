@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="whiteCard">#FFFFFF</color>
+    <color name="whiteBackground">#F7F7F7</color>
+    <color name="whiteSearchCard">#EDEDED</color>
+    <color name="grayText">#939393</color>
+    <color name="grayIcon">#999999</color>
+    <color name="grayTabIcons">#979797</color>
+    <color name="grayLight">#E4E4E4</color>
+    <color name="orangeAccent">#FBB20D</color>
+    <color name="orangeLight">#FFC540</color>
+    <color name="red">#FF2600</color>
+    <color name="redLight">#FF6347</color>
+
+
+    <color name="black">#12110F</color>
+</resources>
