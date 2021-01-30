@@ -1,19 +1,25 @@
 package com.ferelin.notes.ui.create
 
+import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.res.use
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.transition.Slide
 import com.ferelin.notes.R
 import com.ferelin.notes.base.BaseFragment
 import com.ferelin.notes.databinding.FragmentCreateNoteBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.transition.MaterialContainerTransform
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -35,12 +41,38 @@ class CreateFragment : BaseFragment(), CreateMvpView {
     }
 
     override fun setUp(view: View) {
+
+        enterTransition = MaterialContainerTransform().apply {
+            startView = requireParentFragment().requireView().findViewById(R.id.fab)
+            endView = mBinding.root
+            duration = 300L
+            scrimColor = Color.TRANSPARENT
+            /*containerColor = requireContext().themeColor(R.color.)
+            startContainerColor = requireContext().themeColor(R.attr.colorSecondary)
+            endContainerColor = requireContext().themeColor(R.attr.colorSurface)*/
+        }
+
+        returnTransition = Slide().apply {
+            duration = 250L
+            addTarget(R.id.rootCardView)
+        }
+
         setupEditFields()
         setupImageViews()
         setupBottomSheet()
 
         lifecycleScope.launch(Dispatchers.IO) {
             mPresenter.onViewPrepared(mArguments)
+        }
+    }
+
+    fun Context.themeColor(
+        @AttrRes themeAttrId: Int,
+    ): Int {
+        return obtainStyledAttributes(
+            intArrayOf(themeAttrId)
+        ).use {
+            it.getColor(0, Color.MAGENTA)
         }
     }
 
@@ -84,7 +116,7 @@ class CreateFragment : BaseFragment(), CreateMvpView {
     }
 
     override fun dismiss() {
-        requireView().findNavController().popBackStack()
+        findNavController().popBackStack()
     }
 
     override fun selectedColorIconToDefault() {

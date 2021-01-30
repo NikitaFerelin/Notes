@@ -1,21 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:fillViewport="true">
 
-    <ScrollView
-        android:id="@+id/rootScrollView"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/rootCardView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="24dp">
+        android:backgroundTint="@color/whiteBackground"
+        android:transitionName="cardViewDetailsTransitionName">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/rootConstraint"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="24dp">
 
             <ImageView
                 android:id="@+id/imageViewBack"
@@ -63,7 +68,6 @@
                 android:minHeight="100dp"
                 android:textColor="@color/black"
                 android:textCursorDrawable="@drawable/cursor_edit_text"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textViewTitle"
@@ -80,6 +84,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </ScrollView>
+    </com.google.android.material.card.MaterialCardView>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.core.widget.NestedScrollView>

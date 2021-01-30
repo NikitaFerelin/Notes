@@ -1,17 +1,21 @@
 package com.ferelin.notes.ui.notes
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import androidx.transition.*
 import com.ferelin.notes.base.BaseFragment
 import com.ferelin.notes.databinding.FragmentNotesBinding
-import com.ferelin.notes.ui.pager.PagerFragmentDirections
 import com.ferelin.repository.model.Note
+import com.google.android.material.transition.MaterialElevationScale
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -28,16 +32,25 @@ class NotesFragment : BaseFragment(), NotesMvpView {
         mPresenter = NotesPresenter<NotesMvpView>(requireContext()).apply {
             attachView(this@NotesFragment)
         }
+        Log.d("Test", "NotesFragment: OnCreate, adapter: $mAdapter")
 
         return mBinding.root
     }
 
-    override fun setUp(view: View) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
+
         setupAdapter()
 
         mBinding.fab.setOnClickListener {
             mPresenter.onFabClicked()
         }
+    }
+
+    override fun setUp(view: View) {
+
     }
 
     override fun getNote(position: Int): Note {
@@ -55,26 +68,47 @@ class NotesFragment : BaseFragment(), NotesMvpView {
         date: String,
         color: String,
     ) {
+        val extras = FragmentNavigatorExtras(
+            holder.binding.rootCardView to "cardViewDetailsTransitionName"
+        )
         val action =
-            PagerFragmentDirections.actionPagerFragmentToDetailsFragment(sDeleteNoteResponseKey, title, content, date, color)
-        requireView().findNavController().navigate(action)
-
-        requireParentFragment()
-            .parentFragmentManager
-            .setFragmentResultListener(sDeleteNoteResponseKey, this@NotesFragment) { _, _ ->
-                lifecycleScope.launch(Dispatchers.IO) {
-                    mPresenter.gotResultFromDetails(mAdapter!!.notes[mAdapter!!.lastClickedPosition])
-                }
+            NotesFragmentDirections.actionNotesFragmentToDetailsFragment(sDeleteNoteResponseKey,
+                title,
+                content,
+                date,
+                color,
+                holder.binding.rootCardView.transitionName)
+        exitTransition = MaterialElevationScale(false).apply {
+            duration = 250L
+        }
+        reenterTransition = MaterialElevationScale(true).apply {
+            duration = 300L
+        }
+        findNavController().navigate(action, extras)
+        parentFragmentManager.setFragmentResultListener(sDeleteNoteResponseKey, this@NotesFragment) { _, _ ->
+            lifecycleScope.launch(Dispatchers.IO) {
+                delay(350)
+                mPresenter.gotResultFromDetails(mAdapter!!.notes[mAdapter!!.lastClickedPosition])
             }
+        }
     }
 
     override fun moveToCreateNote() {
-        val action = PagerFragmentDirections.actionPagerFragmentToCreateFragment(sAddNoteResponseKey)
-        requireView().findNavController().navigate(action)
+        val action = NotesFragmentDirections.actionNotesFragmentToCreateFragment(sAddNoteResponseKey)
 
-        requireParentFragment().parentFragmentManager.setFragmentResultListener(sAddNoteResponseKey,
+        exitTransition = MaterialElevationScale(false).apply {
+            duration = 250L
+        }
+        reenterTransition = MaterialElevationScale(true).apply {
+            duration = 300L
+        }
+
+        findNavController().navigate(action)
+
+        parentFragmentManager.setFragmentResultListener(sAddNoteResponseKey,
             this@NotesFragment) { _, bundle ->
             lifecycleScope.launch(Dispatchers.IO) {
+                delay(350)
                 mPresenter.gotResultFromCreate(bundle)
             }
         }
@@ -103,6 +137,7 @@ class NotesFragment : BaseFragment(), NotesMvpView {
                         }
                     }
                 }
+                setHasStableIds(true)
             }
         }
         mBinding.recyclerView.adapter = mAdapter

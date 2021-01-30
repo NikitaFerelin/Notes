@@ -23,7 +23,9 @@ class NotesPresenter<T : NotesMvpView>(context: Context) : BasePresenter<T>(), N
     }
 
     override suspend fun gotResultFromDetails(lastClickedNote: Note) {
-        view.removeLastClickedNote()
+        withContext(Dispatchers.Main) {
+            view.removeLastClickedNote()
+        }
         mDataManager.removeNote(lastClickedNote)
     }
 

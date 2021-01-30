@@ -37,6 +37,10 @@ class NotesAdapter(private val mClickListener: AdaptiveClickListener) : Recycler
         return mNotes.size
     }
 
+    override fun getItemId(position: Int): Long {
+        return mNotes[position].id.toLong()
+    }
+
     fun setNotes(notes: ArrayList<Note>) {
         mNotes = notes
         notifyDataSetChanged()
@@ -59,9 +63,9 @@ class NotesAdapter(private val mClickListener: AdaptiveClickListener) : Recycler
                 textViewContent.text = item.preContent
                 textViewTitle.text = item.title
                 textViewDate.text = item.date
-                textViewContent.transitionName = "content_${item.id}"
-                textViewTitle.transitionName = "title_${item.id}"
-                textViewDate.transitionName = "date_${item.id}"
+                binding.rootCardView.transitionName = "root_${item.id}"
+                //textViewTitle.transitionName = "title_${item.id}"
+                //textViewDate.transitionName = "date_${item.id}"
                 val adaptiveColor = ColorTransformer.fromStringToInt(item.color)
                 ImageViewCompat.setImageTintList(imageViewColorIndicator, ColorStateList.valueOf(adaptiveColor))
             }

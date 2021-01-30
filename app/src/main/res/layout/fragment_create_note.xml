@@ -6,77 +6,86 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/rootScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="24dp">
+        android:clipToPadding="false"
+        android:fillViewport="true">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/rootConstraint"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/rootCardView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/whiteBackground">
 
-            <ImageView
-                android:id="@+id/imageViewBack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_back"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/imageViewAccept"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_check_locked"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <View
-                android:id="@+id/viewColorIndicator"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/rootConstraint"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginTop="8dp"
-                android:background="@color/whiteBackground"
-                app:layout_constraintTop_toBottomOf="@id/imageViewAccept" />
+                android:layout_height="match_parent"
+                android:padding="24dp">
 
-            <EditText
-                android:id="@+id/editTextTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@color/whiteBackground"
-                android:hint="Title"
-                android:imeOptions="actionDone"
-                android:importantForAutofill="no"
-                android:inputType="text"
-                android:textColor="@color/grayIcon"
-                android:textColorHint="@color/grayIcon"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/viewColorIndicator"
-                tools:text="Title" />
+                <ImageView
+                    android:id="@+id/imageViewBack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_back"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:id="@+id/editTextContent"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:background="@color/whiteBackground"
-                android:gravity="top"
-                android:inputType="textMultiLine"
-                android:minHeight="100dp"
-                android:textColor="@color/black"
-                android:textCursorDrawable="@drawable/cursor_edit_text"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/editTextTitle"
-                tools:text="dsafmoepwjforeglokerlgkeroger" />
+                <ImageView
+                    android:id="@+id/imageViewAccept"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_check_locked"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <View
+                    android:id="@+id/viewColorIndicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/whiteBackground"
+                    app:layout_constraintTop_toBottomOf="@id/imageViewAccept" />
 
-    </ScrollView>
+                <EditText
+                    android:id="@+id/editTextTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/whiteBackground"
+                    android:hint="Title"
+                    android:imeOptions="actionDone"
+                    android:importantForAutofill="no"
+                    android:inputType="text"
+                    android:textColor="@color/grayIcon"
+                    android:textColorHint="@color/grayIcon"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/viewColorIndicator"
+                    tools:text="Title" />
+
+                <EditText
+                    android:id="@+id/editTextContent"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@color/whiteBackground"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:minHeight="100dp"
+                    android:textColor="@color/black"
+                    android:textCursorDrawable="@drawable/cursor_edit_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/editTextTitle"
+                    tools:text="dsafmoepwjforeglokerlgkeroger" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.core.widget.NestedScrollView>
 
     <include
         android:id="@+id/rootBottomSheet"
