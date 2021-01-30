@@ -2,20 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/pagerFragment">
-
-    <fragment
-        android:id="@+id/pagerFragment"
-        android:name="com.ferelin.notes.ui.pager.PagerFragment"
-        android:label="PagerFragment">
-
-        <action
-            android:id="@+id/action_pagerFragment_to_createFragment"
-            app:destination="@id/createFragment" />
-        <action
-            android:id="@+id/action_pagerFragment_to_detailsFragment"
-            app:destination="@id/detailsFragment" />
-    </fragment>
+    app:startDestination="@id/notesFragment">
 
     <fragment
         android:id="@+id/createFragment"
@@ -46,6 +33,22 @@
         <argument
             android:name="color"
             app:argType="string" />
+        <argument
+            android:name="transitionName"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/notesFragment"
+        android:name="com.ferelin.notes.ui.notes.NotesFragment"
+        android:label="NotesFragment" >
+        <action
+            android:id="@+id/action_notesFragment_to_createFragment"
+            app:destination="@id/createFragment"
+            app:popUpTo="@id/notesFragment" />
+        <action
+            android:id="@+id/action_notesFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment"
+            app:popUpTo="@id/notesFragment" />
     </fragment>
 
 </navigation>
