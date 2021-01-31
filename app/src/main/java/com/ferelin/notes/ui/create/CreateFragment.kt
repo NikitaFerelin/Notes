@@ -1,14 +1,11 @@
 package com.ferelin.notes.ui.create
 
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.content.res.use
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
@@ -27,10 +24,10 @@ class CreateFragment : BaseFragment(), CreateMvpView {
 
     private lateinit var mPresenter: CreatePresenter<CreateMvpView>
     private lateinit var mBinding: FragmentCreateNoteBinding
-    private val mArguments: CreateFragmentArgs by navArgs()
-
-    private var mIsAcceptBtnLocked = true
     private lateinit var mBottomSheetBehavior: BottomSheetBehavior<ViewGroup>
+
+    private val mArguments: CreateFragmentArgs by navArgs()
+    private var mIsAcceptBtnLocked = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         mBinding = FragmentCreateNoteBinding.inflate(inflater, container, false)
@@ -41,22 +38,7 @@ class CreateFragment : BaseFragment(), CreateMvpView {
     }
 
     override fun setUp(view: View) {
-
-        enterTransition = MaterialContainerTransform().apply {
-            startView = requireParentFragment().requireView().findViewById(R.id.fab)
-            endView = mBinding.root
-            duration = 300L
-            scrimColor = Color.TRANSPARENT
-            /*containerColor = requireContext().themeColor(R.color.)
-            startContainerColor = requireContext().themeColor(R.attr.colorSecondary)
-            endContainerColor = requireContext().themeColor(R.attr.colorSurface)*/
-        }
-
-        returnTransition = Slide().apply {
-            duration = 250L
-            addTarget(R.id.rootCardView)
-        }
-
+        setupTransitions()
         setupEditFields()
         setupImageViews()
         setupBottomSheet()
@@ -65,17 +47,6 @@ class CreateFragment : BaseFragment(), CreateMvpView {
             mPresenter.onViewPrepared(mArguments)
         }
     }
-
-    fun Context.themeColor(
-        @AttrRes themeAttrId: Int,
-    ): Int {
-        return obtainStyledAttributes(
-            intArrayOf(themeAttrId)
-        ).use {
-            it.getColor(0, Color.MAGENTA)
-        }
-    }
-
 
     override fun setResult(arg: Bundle, responseKey: String) {
         setFragmentResult(responseKey, arg)
@@ -116,6 +87,7 @@ class CreateFragment : BaseFragment(), CreateMvpView {
     }
 
     override fun dismiss() {
+        hideKeyboard()
         findNavController().popBackStack()
     }
 
@@ -145,6 +117,20 @@ class CreateFragment : BaseFragment(), CreateMvpView {
     override fun onDestroyView() {
         mPresenter.detachView()
         super.onDestroyView()
+    }
+
+    private fun setupTransitions() {
+        enterTransition = MaterialContainerTransform().apply {
+            startView = requireParentFragment().requireView().findViewById(R.id.fab)
+            endView = mBinding.root
+            duration = 300L
+            scrimColor = Color.TRANSPARENT
+        }
+
+        returnTransition = Slide().apply {
+            duration = 250L
+            addTarget(R.id.rootCardView)
+        }
     }
 
     private fun setupEditFields() {

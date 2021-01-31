@@ -25,8 +25,10 @@ class CreatePresenter<T : CreateMvpView>(private val context: Context) : BasePre
     private lateinit var mResponseKey: String
 
     override suspend fun onViewPrepared(args: CreateFragmentArgs) {
+        withContext(Dispatchers.Main) {
+            view.setFocusToContentEdit()
+        }
         mResponseKey = args.responseKey
-
         mDataManager.getLastNote().take(1).collect {
             withContext(Dispatchers.Main) {
                 recoverNote(view, it)

@@ -12,17 +12,11 @@ class DetailsPresenter<T : DetailsMvpView>(private val context: Context) : BaseP
 
     override fun onViewPrepared(args: DetailsFragmentArgs) {
         mResponseKey = args.responseKey
-        val title = args.title
-        val content = args.content
-        val color = args.color
-        val date = args.date
         view.apply {
-            setContent(content)
-            setTitle(title)
-            setDate(date)
-            if (ColorTransformer.fromIntToString(context, NoteColors.DEFAULT_COLOR) == color) {
-                setColor(ColorTransformer.getSettableColor(context, NoteColors.ADAPTIVE_DEFAULT_COLOR))
-            } else setColor(ColorTransformer.fromStringToInt(color))
+            setContent(args.content)
+            setTitle(args.title)
+            setDate(args.date)
+            setColor(adaptColor(args.color))
         }
     }
 
@@ -35,5 +29,11 @@ class DetailsPresenter<T : DetailsMvpView>(private val context: Context) : BaseP
 
     override fun onBackBtnClicked() {
         view.dismiss()
+    }
+
+    private fun adaptColor(color: String): Int {
+        return if (ColorTransformer.fromIntToString(context, NoteColors.DEFAULT_COLOR) == color) {
+            ColorTransformer.getSettableColor(context, NoteColors.ADAPTIVE_DEFAULT_COLOR)
+        } else ColorTransformer.fromStringToInt(color)
     }
 }

@@ -28,10 +28,20 @@
             android:background="@color/whiteSearchCard"
             android:src="@drawable/ic_search" />
 
+        <ImageView
+            android:id="@+id/imageViewCloseSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|start"
+            android:layout_marginStart="16dp"
+            android:background="@color/whiteSearchCard"
+            android:src="@drawable/ic_close"
+            android:visibility="gone" />
+
         <EditText
             android:id="@+id/editTextSearch"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_marginStart="46dp"
             android:layout_marginEnd="34dp"

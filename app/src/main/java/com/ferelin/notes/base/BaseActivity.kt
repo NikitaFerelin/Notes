@@ -19,7 +19,7 @@ abstract class BaseActivity : AppCompatActivity(), MvpView {
 
     override fun showKeyboard(view: View) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
     }
 
     override fun showMessage(@StringRes resId: Int) {

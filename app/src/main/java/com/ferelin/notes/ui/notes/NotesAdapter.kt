@@ -56,16 +56,19 @@ class NotesAdapter(private val mClickListener: AdaptiveClickListener) : Recycler
         notifyItemRemoved(position)
     }
 
+    fun invalidate() {
+        mNotes.clear()
+        notifyDataSetChanged()
+    }
+
     class NoteViewHolder private constructor(val binding: ItemNoteBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Note) {
-            with(binding) {
+            binding.apply {
                 textViewContent.text = item.preContent
                 textViewTitle.text = item.title
                 textViewDate.text = item.date
                 binding.rootCardView.transitionName = "root_${item.id}"
-                //textViewTitle.transitionName = "title_${item.id}"
-                //textViewDate.transitionName = "date_${item.id}"
                 val adaptiveColor = ColorTransformer.fromStringToInt(item.color)
                 ImageViewCompat.setImageTintList(imageViewColorIndicator, ColorStateList.valueOf(adaptiveColor))
             }

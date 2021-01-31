@@ -16,15 +16,24 @@ class NotesPresenter<T : NotesMvpView>(context: Context) : BasePresenter<T>(), N
 
     private val mDataManager = AppDataManager.getInstance(context)
 
+    private var mOriginalNotes: MutableList<Note> = mutableListOf()
+    val originalNotes: List<Note>
+        get() = mOriginalNotes.toList()
+
     override suspend fun getNotes(): Flow<List<Note>> = flow {
         mDataManager.getNotes().collect {
             emit(it)
+            mOriginalNotes = it.toMutableList()
         }
     }
 
     override suspend fun gotResultFromDetails(lastClickedNote: Note) {
         withContext(Dispatchers.Main) {
-            view.removeLastClickedNote()
+            view.apply {
+                removeLastClickedNote()
+                removeNoteFromFilter(lastClickedNote)
+                triggerFilter()
+            }
         }
         mDataManager.removeNote(lastClickedNote)
     }
@@ -36,17 +45,20 @@ class NotesPresenter<T : NotesMvpView>(context: Context) : BasePresenter<T>(), N
         val newNote = Note(title = title, content = content, color = color)
 
         withContext(Dispatchers.Main) {
-            view.addNote(newNote)
+            view.apply {
+                addNote(newNote)
+                addNoteToFilter(newNote)
+            }
         }
         mDataManager.insertNote(newNote)
     }
 
     override fun onFabClicked() {
-        view.moveToCreateNote()
+        view.replaceWithCreateFragment()
     }
 
     override fun onNoteClicked(holder: NotesAdapter.NoteViewHolder, position: Int) {
         val note = view.getNote(position)
-        view.moveToNoteInfo(holder, note.title, note.content, note.date, note.color)
+        view.replaceWithDetailFragment(holder, note.title, note.content, note.date, note.color)
     }
 }

@@ -1,11 +1,13 @@
 package com.ferelin.notes.ui.notes
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.core.view.doOnPreDraw
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -14,43 +16,69 @@ import com.ferelin.notes.base.BaseFragment
 import com.ferelin.notes.databinding.FragmentNotesBinding
 import com.ferelin.repository.model.Note
 import com.google.android.material.transition.MaterialElevationScale
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-class NotesFragment : BaseFragment(), NotesMvpView {
+class NotesFragment : BaseFragment(), NotesMvpView, Filterable {
 
-    private lateinit var mPresenter: NotesPresenter<NotesMvpView>
     private lateinit var mBinding: FragmentNotesBinding
 
+    private var mPresenter: NotesPresenter<NotesMvpView>? = null
     private var mAdapter: NotesAdapter? = null
+    private var mFilter: NotesFilter? = null
+
+    private var mNotesLoadJob: Job? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupAnims()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = FragmentNotesBinding.inflate(inflater, container, false)
-        mPresenter = NotesPresenter<NotesMvpView>(requireContext()).apply {
-            attachView(this@NotesFragment)
+        if (mPresenter == null) {
+            mPresenter = NotesPresenter(requireContext())
         }
-        Log.d("Test", "NotesFragment: OnCreate, adapter: $mAdapter")
+        mPresenter!!.attachView(this)
 
         return mBinding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        postponeEnterTransition()
-        view.doOnPreDraw { startPostponedEnterTransition() }
-
-        setupAdapter()
-
-        mBinding.fab.setOnClickListener {
-            mPresenter.onFabClicked()
-        }
+    override fun setUp(view: View) {
+        postponeAnim()
+        setupRecyclerAdapter()
+        setupListeners()
+        setupFilter()
     }
 
-    override fun setUp(view: View) {
+    override fun replaceWithDetailFragment(
+        holder: NotesAdapter.NoteViewHolder,
+        title: String,
+        content: String,
+        date: String,
+        color: String,
+    ) {
+        val extras = FragmentNavigatorExtras(holder.binding.rootCardView to "cardViewDetailsTransitionName")
+        val action = NotesFragmentDirections.actionNotesFragmentToDetailsFragment(
+            sDeleteNoteResponseKey,
+            title,
+            content,
+            date,
+            color,
+            holder.binding.rootCardView.transitionName)
 
+        findNavController().navigate(action, extras)
+        setupDetailFrgResultListener()
+    }
+
+    override fun replaceWithCreateFragment() {
+        val action = NotesFragmentDirections.actionNotesFragmentToCreateFragment(sAddNoteResponseKey)
+        findNavController().navigate(action)
+        setupCreateFrgResultListener()
+    }
+
+    override fun addNote(note: Note) {
+        mAdapter!!.addNote(note)
     }
 
     override fun getNote(position: Int): Note {
@@ -58,82 +86,73 @@ class NotesFragment : BaseFragment(), NotesMvpView {
     }
 
     override fun onItemClicked(holder: NotesAdapter.NoteViewHolder, position: Int) {
-        mPresenter.onNoteClicked(holder, position)
-    }
-
-    override fun moveToNoteInfo(
-        holder: NotesAdapter.NoteViewHolder,
-        title: String,
-        content: String,
-        date: String,
-        color: String,
-    ) {
-        val extras = FragmentNavigatorExtras(
-            holder.binding.rootCardView to "cardViewDetailsTransitionName"
-        )
-        val action =
-            NotesFragmentDirections.actionNotesFragmentToDetailsFragment(sDeleteNoteResponseKey,
-                title,
-                content,
-                date,
-                color,
-                holder.binding.rootCardView.transitionName)
-        exitTransition = MaterialElevationScale(false).apply {
-            duration = 250L
-        }
-        reenterTransition = MaterialElevationScale(true).apply {
-            duration = 300L
-        }
-        findNavController().navigate(action, extras)
-        parentFragmentManager.setFragmentResultListener(sDeleteNoteResponseKey, this@NotesFragment) { _, _ ->
-            lifecycleScope.launch(Dispatchers.IO) {
-                delay(350)
-                mPresenter.gotResultFromDetails(mAdapter!!.notes[mAdapter!!.lastClickedPosition])
-            }
-        }
-    }
-
-    override fun moveToCreateNote() {
-        val action = NotesFragmentDirections.actionNotesFragmentToCreateFragment(sAddNoteResponseKey)
-
-        exitTransition = MaterialElevationScale(false).apply {
-            duration = 250L
-        }
-        reenterTransition = MaterialElevationScale(true).apply {
-            duration = 300L
-        }
-
-        findNavController().navigate(action)
-
-        parentFragmentManager.setFragmentResultListener(sAddNoteResponseKey,
-            this@NotesFragment) { _, bundle ->
-            lifecycleScope.launch(Dispatchers.IO) {
-                delay(350)
-                mPresenter.gotResultFromCreate(bundle)
-            }
-        }
-    }
-
-    override fun addNote(note: Note) {
-        mAdapter!!.addNote(note)
+        mPresenter!!.onNoteClicked(holder, position)
     }
 
     override fun removeLastClickedNote() {
         mAdapter!!.removeNote()
     }
 
+    override fun getFilter(): Filter {
+        return mFilter as Filter
+    }
+
+    override fun removeNoteFromFilter(note: Note) {
+        mFilter!!.items.remove(note)
+    }
+
+    override fun addNoteToFilter(note: Note) {
+        mFilter!!.items.add(0, note)
+    }
+
+    override fun triggerFilter() {
+        mFilter!!.filter(mBinding.editTextSearch.text)
+    }
+
+    override fun filter(text: String) {
+        mFilter!!.filter(text)
+    }
+
     override fun onDestroyView() {
-        mPresenter.detachView()
+        mPresenter!!.detachView()
         super.onDestroyView()
     }
 
-    private fun setupAdapter() {
+    private fun setupDetailFrgResultListener() {
+        parentFragmentManager.setFragmentResultListener(sDeleteNoteResponseKey, this@NotesFragment) { _, _ ->
+            lifecycleScope.launch(Dispatchers.IO) {
+                delay(350)
+                mPresenter!!.gotResultFromDetails(mAdapter!!.notes[mAdapter!!.lastClickedPosition])
+            }
+        }
+    }
+
+    private fun setupCreateFrgResultListener() {
+        parentFragmentManager.setFragmentResultListener(sAddNoteResponseKey, this@NotesFragment) { _, bundle ->
+            lifecycleScope.launch(Dispatchers.IO) {
+                delay(350)
+                mPresenter!!.gotResultFromCreate(bundle)
+            }
+        }
+    }
+
+    private fun setupAnims() {
+        exitTransition = MaterialElevationScale(false).apply {
+            duration = 250L
+        }
+        reenterTransition = MaterialElevationScale(true).apply {
+            duration = 300L
+        }
+    }
+
+    private fun setupRecyclerAdapter() {
         if (mAdapter == null) {
             mAdapter = NotesAdapter(this).apply {
-                lifecycleScope.launch(Dispatchers.IO) {
-                    mPresenter.getNotes().collect {
+                mNotesLoadJob = lifecycleScope.launch(Dispatchers.IO) {
+                    mPresenter!!.getNotes().collect {
                         withContext(Dispatchers.Main) {
                             setNotes(ArrayList(it))
+                            cancel()
                         }
                     }
                 }
@@ -141,6 +160,49 @@ class NotesFragment : BaseFragment(), NotesMvpView {
             }
         }
         mBinding.recyclerView.adapter = mAdapter
+    }
+
+    private fun setupFilter() {
+        if (mFilter == null) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                mNotesLoadJob?.join()
+                withContext(Dispatchers.Main) {
+                    mFilter = NotesFilter(mAdapter!!.notes.toList(), onResultsPublished = {
+                        mAdapter!!.invalidate()
+                        mAdapter!!.setNotes(ArrayList(it))
+                    })
+                    setupFilterListener()
+                }
+            }
+        } else setupFilterListener()
+    }
+
+    private fun setupListeners() {
+        mBinding.apply {
+            fab.setOnClickListener {
+                mPresenter!!.onFabClicked()
+            }
+
+            imageViewCloseSearch.setOnClickListener {
+                // TODO ANIM
+                /*mAdapter!!.setNotes(ArrayList(mPresenter!!.originalNotes))
+                mBinding.editTextSearch.setText("")
+                hideKeyboard()*/
+            }
+        }
+    }
+
+    private fun setupFilterListener() {
+        mBinding.editTextSearch.addTextChangedListener {
+            if (mBinding.editTextSearch.isFocused) {
+                mFilter!!.onTextChanged(it.toString())
+            }
+        }
+    }
+
+    private fun postponeAnim() {
+        postponeEnterTransition()
+        view?.doOnPreDraw { startPostponedEnterTransition() }
     }
 
     companion object {
