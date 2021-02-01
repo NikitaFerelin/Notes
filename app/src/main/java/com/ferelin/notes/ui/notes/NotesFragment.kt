@@ -1,7 +1,6 @@
 package com.ferelin.notes.ui.notes
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +18,7 @@ import com.ferelin.repository.model.Note
 import com.google.android.material.transition.MaterialElevationScale
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.take
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import moxy.presenter.ProvidePresenterTag
@@ -43,10 +43,9 @@ class NotesFragment : BaseFragment(), NotesMvpView, Filterable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setupAnims()
         recoverLastClickedItem(savedInstanceState)
-        mPresenter.onViewPrepared()
+        mPresenter.onFragmentCreate()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -57,7 +56,7 @@ class NotesFragment : BaseFragment(), NotesMvpView, Filterable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         postponeAnim()
-        setupRecyclerAdapter(savedInstanceState)
+        setupRecyclerAdapter()
         setupListeners()
         setupFilter()
     }
@@ -69,7 +68,8 @@ class NotesFragment : BaseFragment(), NotesMvpView, Filterable {
         date: String,
         color: String,
     ) {
-        val extras = FragmentNavigatorExtras(holder.binding.rootCardView to "cardViewDetailsTransitionName") // TODO name
+        // TODO name
+        val extras = FragmentNavigatorExtras(holder.binding.rootCardView to "cardViewDetailsTransitionName")
         val action = NotesFragmentDirections.actionNotesFragmentToDetailsFragment(
             sDeleteNoteResponseKey,
             title,
@@ -157,58 +157,45 @@ class NotesFragment : BaseFragment(), NotesMvpView, Filterable {
         }
     }
 
-    private fun setupRecyclerAdapter(savedState: Bundle?) {
+    private fun setupRecyclerAdapter() {
         if (mAdapter == null) {
             mAdapter = NotesAdapter(this).apply {
                 mNotesLoadJob = lifecycleScope.launch(Dispatchers.IO) {
-                    mPresenter.getNotes().collect {
+                    mPresenter.getNotes().take(1).collect {
                         withContext(Dispatchers.Main) {
                             setNotes(ArrayList(it))
-                            cancel() // TODO TRY take(1)
                         }
                     }
                 }
                 setHasStableIds(true)
             }
         }
-        mBinding.recyclerView.adapter = mAdapter!!
+        mBinding.recyclerView.adapter = mAdapter
     }
 
     private fun setupFilter() {
         if (mFilter == null) {
             lifecycleScope.launch(Dispatchers.IO) {
-                mNotesLoadJob?.join()
                 withContext(Dispatchers.Main) {
                     mFilter = NotesFilter(mAdapter!!.notes.toList(), onResultsPublished = {
-                        Log.d("Test", "On published, ${it.size}")
                         mPresenter.onResultsPublished(it)
                     })
                     setupFilterListener()
+                    mPresenter.onFilterSetted(mBinding.editTextSearch.text)
                 }
             }
         } else setupFilterListener()
     }
 
     private fun setupListeners() {
-        mBinding.apply {
-            fab.setOnClickListener {
-                mPresenter.onFabClicked()
-            }
-
-            imageViewCloseSearch.setOnClickListener {
-                // TODO ANIM
-                /*mAdapter!!.setNotes(ArrayList(mPresenter!!.originalNotes))
-                mBinding.editTextSearch.setText("")
-                hideKeyboard()*/
-            }
+        mBinding.fab.setOnClickListener {
+            mPresenter.onFabClicked()
         }
     }
 
     private fun setupFilterListener() {
         mBinding.editTextSearch.addTextChangedListener {
-            if (mBinding.editTextSearch.isFocused) {
-                mFilter!!.onTextChanged(it.toString())
-            }
+            mPresenter.onSearchTextChanged(isFieldFocused = mBinding.editTextSearch.isFocused, it)
         }
     }
 

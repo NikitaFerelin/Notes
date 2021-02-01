@@ -8,6 +8,9 @@
         <item name="switchStyle">@style/SwitchButton</item>
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
+
+        <item name="snackbarStyle">@style/snackbar</item>
+        <!--<item name="snackbarTextViewStyle">@style/textStandard</item> -->
     </style>
 
     <style name="SwitchButton" parent="Widget.MaterialComponents.CompoundButton.Switch">
@@ -20,6 +23,11 @@
         <item name="colorSecondary">@color/orangeAccent</item>
         <item name="colorSurface">@color/grayIcon</item>
 
+    </style>
+
+    <style name="snackbar" parent="@style/Widget.MaterialComponents.Snackbar">
+        <item name="backgroundTint">@color/whiteBackground</item>
+        <item name="android:layout_margin">16dp</item>
     </style>
 
 </resources>

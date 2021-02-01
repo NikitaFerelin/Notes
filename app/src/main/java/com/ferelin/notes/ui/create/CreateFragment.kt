@@ -71,7 +71,6 @@ class CreateFragment : BaseFragment(), CreateMvpView {
 
     override fun setFocusToContentEdit() {
         mBinding.editTextContent.requestFocus()
-        // showKeyboard(mBinding.editTextContent) TODO
     }
 
     override fun setSelectedColor(color: Int) {
@@ -97,7 +96,6 @@ class CreateFragment : BaseFragment(), CreateMvpView {
     }
 
     override fun dismiss() {
-        hideKeyboard(requireContext(), mBinding.root)
         findNavController().popBackStack()
     }
 
@@ -115,6 +113,14 @@ class CreateFragment : BaseFragment(), CreateMvpView {
 
     override fun selectedColorIconToOrange() {
         switchBottomSheetIconTo(R.id.viewSelectableOrange)
+    }
+
+    override fun hideKeyboard() {
+        super.hideKeyboard(mBinding.editTextContent)
+    }
+
+    override fun showKeyboard() {
+        super.showKeyboard(mBinding.editTextContent)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

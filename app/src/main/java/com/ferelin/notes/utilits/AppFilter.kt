@@ -19,10 +19,6 @@ abstract class AppFilter<T> : Filter() {
         return FilterResults().apply { values = filterList }
     }
 
-    fun onTextChanged(text: String) {
-        filter(text)
-    }
-
     private fun filter(searchText: String, filterList: MutableList<T>) {
         for (item in items) {
             if (filterStrategy(item, searchText)) {

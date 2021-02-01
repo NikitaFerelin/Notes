@@ -2,6 +2,8 @@ package com.ferelin.notes.ui.notes
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.util.Log
 import com.ferelin.notes.ui.create.CreatePresenter
 import com.ferelin.repository.db.AppDataManager
 import com.ferelin.repository.model.Note
@@ -18,14 +20,17 @@ class NotesPresenter(context: Context) : MvpPresenter<NotesMvpView>() {
 
     private val mDataManager = AppDataManager.getInstance(context)
 
-    private var mOriginalNotes: MutableList<Note> = mutableListOf()
-    val originalNotes: List<Note>
-        get() = mOriginalNotes.toList()
-
-    fun onViewPrepared() {
+    fun onFragmentCreate() {
         viewState.apply {
             setupCreateFrgResultListener()
             setupDetailFrgResultListener()
+        }
+    }
+
+    fun onFilterSetted(searchText: Editable) {
+        Log.d("Test", "${searchText.toString()} -- ")
+        if (searchText.toString().isNotEmpty()) {
+            viewState.triggerFilter()
         }
     }
 
@@ -33,10 +38,15 @@ class NotesPresenter(context: Context) : MvpPresenter<NotesMvpView>() {
         viewState.setNotes(items)
     }
 
+    fun onSearchTextChanged(isFieldFocused: Boolean, text: Editable?) {
+        if (isFieldFocused) {
+            viewState.filter(text.toString())
+        }
+    }
+
     suspend fun getNotes(): Flow<List<Note>> = flow {
         mDataManager.getNotes().collect {
             emit(it)
-            mOriginalNotes = it.toMutableList()
         }
     }
 

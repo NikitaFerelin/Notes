@@ -22,19 +22,22 @@ class CreatePresenter(private val context: Context) : MvpPresenter<CreateMvpView
 
     private val mDataManager = AppDataManager.getInstance(context)
 
-    private val mDefaultColor = NoteColors.ADAPTIVE_DEFAULT_COLOR
-    private var mSelectedColor = mDefaultColor
     private lateinit var mResponseKey: String
 
+    private val mDefaultColor = NoteColors.ADAPTIVE_DEFAULT_COLOR
+    private var mSelectedColor = mDefaultColor
+
     suspend fun onViewPrepared(args: CreateFragmentArgs) {
-        withContext(Dispatchers.Main) {
-            viewState.setFocusToContentEdit()
-        }
-        mResponseKey = args.responseKey
         mDataManager.getLastNote().take(1).collect {
             withContext(Dispatchers.Main) {
                 recoverNote(viewState, it)
             }
+        }
+
+        mResponseKey = args.responseKey
+        withContext(Dispatchers.Main) {
+            viewState.setFocusToContentEdit()
+            viewState.showKeyboard()
         }
     }
 
@@ -44,6 +47,7 @@ class CreatePresenter(private val context: Context) : MvpPresenter<CreateMvpView
             val color = if (mSelectedColor == mDefaultColor) {
                 ColorTransformer.fromIntToString(context, NoteColors.DEFAULT_COLOR)
             } else ColorTransformer.fromIntToString(context, mSelectedColor)
+
             val result = bundleOf(
                 NOTE_CONTENT_KEY to transformedContent,
                 NOTE_TITLE_KEY to transformedTitle,
@@ -57,10 +61,10 @@ class CreatePresenter(private val context: Context) : MvpPresenter<CreateMvpView
 
             viewState.apply {
                 setResult(result, mResponseKey)
+                hideKeyboard()
                 dismiss()
             }
-        } else {
-        }//viewState.showMessage("Note is empty") TODO
+        } else viewState.showMessage("Note is empty") // TODO TEXT
     }
 
     fun onBottomSheetClicked(bottomSheetState: Int) {
@@ -99,7 +103,10 @@ class CreatePresenter(private val context: Context) : MvpPresenter<CreateMvpView
     }
 
     fun onBackBtnClicked() {
-        viewState.dismiss()
+        viewState.apply {
+            hideKeyboard()
+            dismiss()
+        }
     }
 
     suspend fun onSaveInstanceState(title: Editable?, content: Editable?) {

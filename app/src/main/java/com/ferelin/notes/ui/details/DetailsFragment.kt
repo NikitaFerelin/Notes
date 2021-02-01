@@ -42,7 +42,7 @@ class DetailsFragment : BaseFragment(), DetailsMvpView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        with(mBinding) {
+        mBinding.apply {
             imageViewBack.setOnClickListener {
                 mPresenter.onBackBtnClicked()
             }
