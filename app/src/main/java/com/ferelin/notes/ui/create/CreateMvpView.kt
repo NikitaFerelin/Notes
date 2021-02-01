@@ -1,9 +1,13 @@
 package com.ferelin.notes.ui.create
 
 import android.os.Bundle
-import com.ferelin.notes.base.MvpView
+import android.view.View
+import com.ferelin.notes.base.AppMvpView
+import moxy.viewstate.strategy.AddToEndSingleStrategy
+import moxy.viewstate.strategy.StateStrategyType
 
-interface CreateMvpView : MvpView {
+@StateStrategyType(AddToEndSingleStrategy::class)
+interface CreateMvpView : AppMvpView {
 
     fun lockAcceptButton()
 

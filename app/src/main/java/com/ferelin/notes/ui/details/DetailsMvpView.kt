@@ -1,9 +1,12 @@
 package com.ferelin.notes.ui.details
 
 import android.os.Bundle
-import com.ferelin.notes.base.MvpView
+import com.ferelin.notes.base.AppMvpView
+import moxy.viewstate.strategy.AddToEndSingleStrategy
+import moxy.viewstate.strategy.StateStrategyType
 
-interface DetailsMvpView : MvpView {
+@StateStrategyType(AddToEndSingleStrategy::class)
+interface DetailsMvpView : AppMvpView {
 
     fun dismiss()
 

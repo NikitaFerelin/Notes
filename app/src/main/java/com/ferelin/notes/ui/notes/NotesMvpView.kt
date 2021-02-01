@@ -1,13 +1,28 @@
 package com.ferelin.notes.ui.notes
 
-import com.ferelin.notes.base.MvpView
+import com.ferelin.notes.base.AppMvpView
 import com.ferelin.repository.model.Note
+import moxy.viewstate.strategy.OneExecutionStateStrategy
+import moxy.viewstate.strategy.StateStrategyType
 
-interface NotesMvpView : MvpView, AdaptiveClickListener {
+@StateStrategyType(OneExecutionStateStrategy::class)
+interface NotesMvpView : AppMvpView, AdaptiveClickListener {
+
+    fun setupDetailFrgResultListener()
+
+    fun setupCreateFrgResultListener()
 
     fun replaceWithCreateFragment()
 
-    fun replaceWithDetailFragment(holder: NotesAdapter.NoteViewHolder, title: String, content: String, date: String, color: String)
+    fun replaceWithDetailFragment(
+        holder: NotesAdapter.NoteViewHolder,
+        title: String,
+        content: String,
+        date: String,
+        color: String,
+    )
+
+    fun setNotes(items: List<Note>)
 
     fun addNote(note: Note)
 
@@ -20,6 +35,4 @@ interface NotesMvpView : MvpView, AdaptiveClickListener {
     fun triggerFilter()
 
     fun filter(text: String)
-
-    fun getNote(position: Int): Note
 }

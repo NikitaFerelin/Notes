@@ -3,7 +3,6 @@ package com.ferelin.notes.ui.create
 import android.content.Context
 import android.text.Editable
 import androidx.core.os.bundleOf
-import com.ferelin.notes.base.BasePresenter
 import com.ferelin.notes.utilits.ColorTransformer
 import com.ferelin.notes.utilits.NoteColors
 import com.ferelin.notes.utilits.TextTransformer
@@ -15,8 +14,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.withContext
+import moxy.InjectViewState
+import moxy.MvpPresenter
 
-class CreatePresenter<T : CreateMvpView>(private val context: Context) : BasePresenter<T>(), CreateMvpPresenter<T> {
+@InjectViewState
+class CreatePresenter(private val context: Context) : MvpPresenter<CreateMvpView>() {
 
     private val mDataManager = AppDataManager.getInstance(context)
 
@@ -24,19 +26,19 @@ class CreatePresenter<T : CreateMvpView>(private val context: Context) : BasePre
     private var mSelectedColor = mDefaultColor
     private lateinit var mResponseKey: String
 
-    override suspend fun onViewPrepared(args: CreateFragmentArgs) {
+    suspend fun onViewPrepared(args: CreateFragmentArgs) {
         withContext(Dispatchers.Main) {
-            view.setFocusToContentEdit()
+            viewState.setFocusToContentEdit()
         }
         mResponseKey = args.responseKey
         mDataManager.getLastNote().take(1).collect {
             withContext(Dispatchers.Main) {
-                recoverNote(view, it)
+                recoverNote(viewState, it)
             }
         }
     }
 
-    override suspend fun onAcceptBtnClicked(isLocked: Boolean, title: Editable, content: Editable) {
+    suspend fun onAcceptBtnClicked(isLocked: Boolean, title: Editable, content: Editable) {
         if (!isLocked) {
             val (transformedTitle, transformedContent) = TextTransformer.transform(title.toString(), content.toString())
             val color = if (mSelectedColor == mDefaultColor) {
@@ -53,53 +55,54 @@ class CreatePresenter<T : CreateMvpView>(private val context: Context) : BasePre
                 mDataManager.clearLastNote()
             }
 
-            view.apply {
+            viewState.apply {
                 setResult(result, mResponseKey)
                 dismiss()
             }
-        } else view.showMessage("Note is empty")
+        } else {
+        }//viewState.showMessage("Note is empty") TODO
     }
 
-    override fun onBottomSheetClicked(bottomSheetState: Int) {
+    fun onBottomSheetClicked(bottomSheetState: Int) {
         if (bottomSheetState != BottomSheetBehavior.STATE_EXPANDED) {
-            view.expandBottomSheet()
-        } else view.collapseBottomSheet()
+            viewState.expandBottomSheet()
+        } else viewState.collapseBottomSheet()
     }
 
-    override fun onDefaultColorClicked() {
+    fun onDefaultColorClicked() {
         changeColor(mDefaultColor)
-        view.selectedColorIconToDefault()
+        viewState.selectedColorIconToDefault()
     }
 
-    override fun onOrangeColorClicked() {
+    fun onOrangeColorClicked() {
         changeColor(NoteColors.COLOR_ORANGE)
-        view.selectedColorIconToOrange()
+        viewState.selectedColorIconToOrange()
     }
 
-    override fun onGrayColorClicked() {
+    fun onGrayColorClicked() {
         changeColor(NoteColors.COLOR_GRAY)
-        view.selectedColorIconToGray()
+        viewState.selectedColorIconToGray()
     }
 
-    override fun onRedColorClicked() {
+    fun onRedColorClicked() {
         changeColor(NoteColors.COLOR_RED)
-        view.selectedColorIconToRed()
+        viewState.selectedColorIconToRed()
     }
 
-    override fun onTextChanged(content: Editable?, title: Editable?, isAcceptBtnLocked: Boolean) {
+    fun onTextChanged(content: Editable?, title: Editable?, isAcceptBtnLocked: Boolean) {
         val contentStr = content?.toString() ?: ""
         val titleStr = title?.toString() ?: ""
         when {
-            isAcceptBtnLocked && (contentStr.isNotEmpty() || titleStr.isNotEmpty()) -> view.unlockAcceptButton()
-            !isAcceptBtnLocked && contentStr.isEmpty() && titleStr.isEmpty() -> view.lockAcceptButton()
+            isAcceptBtnLocked && (contentStr.isNotEmpty() || titleStr.isNotEmpty()) -> viewState.unlockAcceptButton()
+            !isAcceptBtnLocked && contentStr.isEmpty() && titleStr.isEmpty() -> viewState.lockAcceptButton()
         }
     }
 
-    override fun onBackBtnClicked() {
-        view.dismiss()
+    fun onBackBtnClicked() {
+        viewState.dismiss()
     }
 
-    override suspend fun onSaveInstanceState(title: Editable?, content: Editable?) {
+    suspend fun onSaveInstanceState(title: Editable?, content: Editable?) {
         val titleStr = title?.toString() ?: ""
         val contentStr = content?.toString() ?: ""
         val colorStr = ColorTransformer.fromIntToString(context, mSelectedColor)
@@ -109,7 +112,7 @@ class CreatePresenter<T : CreateMvpView>(private val context: Context) : BasePre
     private fun changeColor(color: Int) {
         if (mSelectedColor != color) {
             val settableColor = ColorTransformer.getSettableColor(context, color)
-            view.setSelectedColor(settableColor)
+            viewState.setSelectedColor(settableColor)
             mSelectedColor = color
         }
     }

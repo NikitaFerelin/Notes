@@ -12,12 +12,22 @@ import com.ferelin.notes.R
 import com.ferelin.notes.base.BaseFragment
 import com.ferelin.notes.databinding.FragmentDetailsBinding
 import com.google.android.material.transition.MaterialContainerTransform
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
+import moxy.presenter.ProvidePresenterTag
 
 class DetailsFragment : BaseFragment(), DetailsMvpView {
 
-    private lateinit var mPresenter: DetailsPresenter<DetailsMvpView>
-    private lateinit var mBinding: FragmentDetailsBinding
+    @InjectPresenter
+    lateinit var mPresenter: DetailsPresenter
 
+    @ProvidePresenterTag(presenterClass = DetailsPresenter::class)
+    fun provideDialogPresenterTag(): String = "Details"
+
+    @ProvidePresenter
+    fun provideDialogPresenter() = DetailsPresenter(requireContext())
+
+    private lateinit var mBinding: FragmentDetailsBinding
     private val mArguments: DetailsFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,13 +37,11 @@ class DetailsFragment : BaseFragment(), DetailsMvpView {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         mBinding = FragmentDetailsBinding.inflate(inflater, container, false)
-        mPresenter = DetailsPresenter<DetailsMvpView>(requireContext()).apply {
-            attachView(this@DetailsFragment)
-        }
         return mBinding.root
     }
 
-    override fun setUp(view: View) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         with(mBinding) {
             imageViewBack.setOnClickListener {
                 mPresenter.onBackBtnClicked()
@@ -67,11 +75,6 @@ class DetailsFragment : BaseFragment(), DetailsMvpView {
 
     override fun setColor(color: Int) {
         mBinding.viewColorIndicator.setBackgroundColor(color)
-    }
-
-    override fun onDestroy() {
-        mPresenter.detachView()
-        super.onDestroy()
     }
 
     private fun setupTransitions() {

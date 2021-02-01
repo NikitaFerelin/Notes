@@ -1,6 +1,7 @@
 package com.ferelin.notes.ui.notes
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,35 +19,45 @@ import com.ferelin.repository.model.Note
 import com.google.android.material.transition.MaterialElevationScale
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
+import moxy.presenter.ProvidePresenterTag
 
 class NotesFragment : BaseFragment(), NotesMvpView, Filterable {
 
-    private lateinit var mBinding: FragmentNotesBinding
+    @InjectPresenter
+    lateinit var mPresenter: NotesPresenter
 
-    private var mPresenter: NotesPresenter<NotesMvpView>? = null
+    @ProvidePresenterTag(presenterClass = NotesPresenter::class)
+    fun provideDialogPresenterTag(): String = "Notes"
+
+    @ProvidePresenter
+    fun provideDialogPresenter() = NotesPresenter(requireContext())
+
+    private lateinit var mBinding: FragmentNotesBinding
     private var mAdapter: NotesAdapter? = null
     private var mFilter: NotesFilter? = null
 
     private var mNotesLoadJob: Job? = null
+    private var mLastClickedNote: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setupAnims()
+        recoverLastClickedItem(savedInstanceState)
+        mPresenter.onViewPrepared()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         mBinding = FragmentNotesBinding.inflate(inflater, container, false)
-        if (mPresenter == null) {
-            mPresenter = NotesPresenter(requireContext())
-        }
-        mPresenter!!.attachView(this)
-
         return mBinding.root
     }
 
-    override fun setUp(view: View) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         postponeAnim()
-        setupRecyclerAdapter()
+        setupRecyclerAdapter(savedInstanceState)
         setupListeners()
         setupFilter()
     }
@@ -58,7 +69,7 @@ class NotesFragment : BaseFragment(), NotesMvpView, Filterable {
         date: String,
         color: String,
     ) {
-        val extras = FragmentNavigatorExtras(holder.binding.rootCardView to "cardViewDetailsTransitionName")
+        val extras = FragmentNavigatorExtras(holder.binding.rootCardView to "cardViewDetailsTransitionName") // TODO name
         val action = NotesFragmentDirections.actionNotesFragmentToDetailsFragment(
             sDeleteNoteResponseKey,
             title,
@@ -66,31 +77,32 @@ class NotesFragment : BaseFragment(), NotesMvpView, Filterable {
             date,
             color,
             holder.binding.rootCardView.transitionName)
-
         findNavController().navigate(action, extras)
-        setupDetailFrgResultListener()
     }
 
     override fun replaceWithCreateFragment() {
         val action = NotesFragmentDirections.actionNotesFragmentToCreateFragment(sAddNoteResponseKey)
         findNavController().navigate(action)
-        setupCreateFrgResultListener()
+    }
+
+    override fun setNotes(items: List<Note>) {
+        mAdapter!!.apply {
+            invalidate()
+            setNotes(ArrayList(items))
+        }
     }
 
     override fun addNote(note: Note) {
         mAdapter!!.addNote(note)
     }
 
-    override fun getNote(position: Int): Note {
-        return mAdapter!!.notes[position]
-    }
-
-    override fun onItemClicked(holder: NotesAdapter.NoteViewHolder, position: Int) {
-        mPresenter!!.onNoteClicked(holder, position)
+    override fun onItemClicked(holder: NotesAdapter.NoteViewHolder, note: Note) {
+        mLastClickedNote = holder.adapterPosition
+        mPresenter.onNoteClicked(holder, note)
     }
 
     override fun removeLastClickedNote() {
-        mAdapter!!.removeNote()
+        mAdapter!!.removeNote(mLastClickedNote)
     }
 
     override fun getFilter(): Filter {
@@ -113,27 +125,27 @@ class NotesFragment : BaseFragment(), NotesMvpView, Filterable {
         mFilter!!.filter(text)
     }
 
-    override fun onDestroyView() {
-        mPresenter!!.detachView()
-        super.onDestroyView()
-    }
-
-    private fun setupDetailFrgResultListener() {
+    override fun setupDetailFrgResultListener() {
         parentFragmentManager.setFragmentResultListener(sDeleteNoteResponseKey, this@NotesFragment) { _, _ ->
             lifecycleScope.launch(Dispatchers.IO) {
                 delay(350)
-                mPresenter!!.gotResultFromDetails(mAdapter!!.notes[mAdapter!!.lastClickedPosition])
+                mPresenter.gotResultFromDetails(mAdapter!!.notes[mLastClickedNote])
             }
         }
     }
 
-    private fun setupCreateFrgResultListener() {
+    override fun setupCreateFrgResultListener() {
         parentFragmentManager.setFragmentResultListener(sAddNoteResponseKey, this@NotesFragment) { _, bundle ->
             lifecycleScope.launch(Dispatchers.IO) {
                 delay(350)
-                mPresenter!!.gotResultFromCreate(bundle)
+                mPresenter.gotResultFromCreate(bundle)
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(sLastClickedNoteSavedKey, mLastClickedNote)
     }
 
     private fun setupAnims() {
@@ -145,21 +157,21 @@ class NotesFragment : BaseFragment(), NotesMvpView, Filterable {
         }
     }
 
-    private fun setupRecyclerAdapter() {
+    private fun setupRecyclerAdapter(savedState: Bundle?) {
         if (mAdapter == null) {
             mAdapter = NotesAdapter(this).apply {
                 mNotesLoadJob = lifecycleScope.launch(Dispatchers.IO) {
-                    mPresenter!!.getNotes().collect {
+                    mPresenter.getNotes().collect {
                         withContext(Dispatchers.Main) {
                             setNotes(ArrayList(it))
-                            cancel()
+                            cancel() // TODO TRY take(1)
                         }
                     }
                 }
                 setHasStableIds(true)
             }
         }
-        mBinding.recyclerView.adapter = mAdapter
+        mBinding.recyclerView.adapter = mAdapter!!
     }
 
     private fun setupFilter() {
@@ -168,8 +180,8 @@ class NotesFragment : BaseFragment(), NotesMvpView, Filterable {
                 mNotesLoadJob?.join()
                 withContext(Dispatchers.Main) {
                     mFilter = NotesFilter(mAdapter!!.notes.toList(), onResultsPublished = {
-                        mAdapter!!.invalidate()
-                        mAdapter!!.setNotes(ArrayList(it))
+                        Log.d("Test", "On published, ${it.size}")
+                        mPresenter.onResultsPublished(it)
                     })
                     setupFilterListener()
                 }
@@ -180,7 +192,7 @@ class NotesFragment : BaseFragment(), NotesMvpView, Filterable {
     private fun setupListeners() {
         mBinding.apply {
             fab.setOnClickListener {
-                mPresenter!!.onFabClicked()
+                mPresenter.onFabClicked()
             }
 
             imageViewCloseSearch.setOnClickListener {
@@ -205,7 +217,15 @@ class NotesFragment : BaseFragment(), NotesMvpView, Filterable {
         view?.doOnPreDraw { startPostponedEnterTransition() }
     }
 
+    private fun recoverLastClickedItem(savedInstance: Bundle?) {
+        if (savedInstance != null) {
+            val lastClickedNote = savedInstance[sLastClickedNoteSavedKey] as Int
+            mLastClickedNote = lastClickedNote
+        }
+    }
+
     companion object {
+        private const val sLastClickedNoteSavedKey = "RECOVER_LAST_CLICKED_NOTE_FROM_SAVED_INSTANCE"
         private const val sAddNoteResponseKey = "NOTES_ADD_RESPONSE_KEY_BUNDLE"
         private const val sDeleteNoteResponseKey = "NOTES_DELETE_RESPONSE_KEY_BUNDLE"
     }

@@ -15,10 +15,6 @@ class NotesAdapter(private val mClickListener: AdaptiveClickListener) : Recycler
     val notes: ArrayList<Note>
         get() = mNotes
 
-    private var mLastClickedPosition = -1
-    val lastClickedPosition: Int
-        get() = mLastClickedPosition
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         return NoteViewHolder.from(parent)
     }
@@ -27,8 +23,7 @@ class NotesAdapter(private val mClickListener: AdaptiveClickListener) : Recycler
         holder.apply {
             bind(mNotes[position])
             binding.root.setOnClickListener {
-                mLastClickedPosition = position
-                mClickListener.onItemClicked(holder, position)
+                mClickListener.onItemClicked(holder, mNotes[position])
             }
         }
     }
@@ -51,7 +46,7 @@ class NotesAdapter(private val mClickListener: AdaptiveClickListener) : Recycler
         notifyItemInserted(0)
     }
 
-    fun removeNote(position: Int = mLastClickedPosition) {
+    fun removeNote(position: Int) {
         mNotes.removeAt(position)
         notifyItemRemoved(position)
     }

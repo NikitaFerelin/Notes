@@ -2,17 +2,19 @@ package com.ferelin.notes.ui.details
 
 import android.content.Context
 import androidx.core.os.bundleOf
-import com.ferelin.notes.base.BasePresenter
 import com.ferelin.notes.utilits.ColorTransformer
 import com.ferelin.notes.utilits.NoteColors
+import moxy.InjectViewState
+import moxy.MvpPresenter
 
-class DetailsPresenter<T : DetailsMvpView>(private val context: Context) : BasePresenter<T>(), DetailsMvpPresenter<T> {
+@InjectViewState
+class DetailsPresenter(private val context: Context) : MvpPresenter<DetailsMvpView>() {
 
     private lateinit var mResponseKey: String
 
-    override fun onViewPrepared(args: DetailsFragmentArgs) {
+    fun onViewPrepared(args: DetailsFragmentArgs) {
         mResponseKey = args.responseKey
-        view.apply {
+        viewState.apply {
             setContent(args.content)
             setTitle(args.title)
             setDate(args.date)
@@ -20,15 +22,15 @@ class DetailsPresenter<T : DetailsMvpView>(private val context: Context) : BaseP
         }
     }
 
-    override fun onDeleteClicked() {
-        view.apply {
+    fun onDeleteClicked() {
+        viewState.apply {
             setResult(bundleOf(), mResponseKey)
             dismiss()
         }
     }
 
-    override fun onBackBtnClicked() {
-        view.dismiss()
+    fun onBackBtnClicked() {
+        viewState.dismiss()
     }
 
     private fun adaptColor(color: String): Int {

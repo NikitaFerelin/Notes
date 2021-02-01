@@ -19,25 +19,34 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.transition.MaterialContainerTransform
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
+import moxy.presenter.ProvidePresenterTag
 
 class CreateFragment : BaseFragment(), CreateMvpView {
 
-    private lateinit var mPresenter: CreatePresenter<CreateMvpView>
-    private lateinit var mBinding: FragmentCreateNoteBinding
-    private lateinit var mBottomSheetBehavior: BottomSheetBehavior<ViewGroup>
+    @InjectPresenter
+    lateinit var mPresenter: CreatePresenter
 
+    @ProvidePresenterTag(presenterClass = CreatePresenter::class)
+    fun provideDialogPresenterTag(): String = "Create"
+
+    @ProvidePresenter
+    fun provideDialogPresenter() = CreatePresenter(requireContext())
+
+    private lateinit var mBinding: FragmentCreateNoteBinding
     private val mArguments: CreateFragmentArgs by navArgs()
+
+    private lateinit var mBottomSheetBehavior: BottomSheetBehavior<ViewGroup>
     private var mIsAcceptBtnLocked = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         mBinding = FragmentCreateNoteBinding.inflate(inflater, container, false)
-        mPresenter = CreatePresenter<CreateMvpView>(requireContext()).apply {
-            attachView(this@CreateFragment)
-        }
         return mBinding.root
     }
 
-    override fun setUp(view: View) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupTransitions()
         setupEditFields()
         setupImageViews()
@@ -56,12 +65,13 @@ class CreateFragment : BaseFragment(), CreateMvpView {
         mBinding.apply {
             editTextTitle.setText(title)
             editTextContent.setText(content)
+            editTextContent.setSelection(editTextContent.text.length)
         }
     }
 
     override fun setFocusToContentEdit() {
         mBinding.editTextContent.requestFocus()
-        showKeyboard(mBinding.editTextContent)
+        // showKeyboard(mBinding.editTextContent) TODO
     }
 
     override fun setSelectedColor(color: Int) {
@@ -87,7 +97,7 @@ class CreateFragment : BaseFragment(), CreateMvpView {
     }
 
     override fun dismiss() {
-        hideKeyboard()
+        hideKeyboard(requireContext(), mBinding.root)
         findNavController().popBackStack()
     }
 
@@ -112,11 +122,6 @@ class CreateFragment : BaseFragment(), CreateMvpView {
         lifecycleScope.launch(Dispatchers.IO) {
             mPresenter.onSaveInstanceState(mBinding.editTextTitle.text, mBinding.editTextContent.text)
         }
-    }
-
-    override fun onDestroyView() {
-        mPresenter.detachView()
-        super.onDestroyView()
     }
 
     private fun setupTransitions() {
