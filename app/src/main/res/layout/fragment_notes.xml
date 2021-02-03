@@ -10,7 +10,7 @@
         android:layout_height="40dp"
         android:layout_marginHorizontal="30dp"
         android:layout_marginTop="@dimen/largeMargin"
-        app:cardBackgroundColor="@color/whiteSearchCard"
+        app:cardBackgroundColor="@color/whiteExtraDark"
         app:cardCornerRadius="@dimen/largeMargin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,8 +21,8 @@
             style="@style/standardIcon"
             android:layout_gravity="center|start"
             android:layout_marginStart="@dimen/standardMargin"
-            android:background="@color/whiteSearchCard"
-            android:contentDescription="@string/hintSearch"
+            android:background="@color/whiteExtraDark"
+            android:contentDescription="@string/descriptionSearch"
             android:src="@drawable/ic_search" />
 
         <EditText
@@ -33,7 +33,7 @@
             android:layout_gravity="center"
             android:layout_marginStart="46dp"
             android:layout_marginEnd="34dp"
-            android:background="@color/whiteSearchCard"
+            android:background="@color/whiteExtraDark"
             android:hint="@string/hintSearchNotes"
             android:importantForAutofill="no"
             android:textSize="14sp" />
@@ -60,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/standardMargin"
-        android:backgroundTint="@color/orangeAccent"
+        android:backgroundTint="@color/orange"
         android:contentDescription="@string/descriptionFab"
         android:src="@drawable/ic_add"
         app:borderWidth="0dp"
@@ -68,6 +68,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:rippleColor="@null"
-        app:tint="@color/whiteCard" />
+        app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

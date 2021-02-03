@@ -8,6 +8,7 @@
         android:id="@+id/createFragment"
         android:name="com.ferelin.notes.ui.create.CreateFragment"
         android:label="CreateFragment">
+
         <argument
             android:name="responseKey"
             app:argType="string" />
@@ -37,10 +38,12 @@
             android:name="transitionName"
             app:argType="string" />
     </fragment>
+
     <fragment
         android:id="@+id/notesFragment"
         android:name="com.ferelin.notes.ui.notes.NotesFragment"
-        android:label="NotesFragment" >
+        android:label="NotesFragment">
+
         <action
             android:id="@+id/action_notesFragment_to_createFragment"
             app:destination="@id/createFragment"

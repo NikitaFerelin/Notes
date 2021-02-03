@@ -17,7 +17,7 @@
         <shape android:shape="oval">
             <stroke
                 android:width="6dp"
-                android:color="@color/whiteCard" />
+                android:color="@color/white" />
         </shape>
 
     </item>
@@ -29,7 +29,7 @@
         android:top="5dp">
 
         <shape android:shape="oval">
-            <solid android:color="@color/whiteBackground"/>
+            <solid android:color="@color/whiteDark"/>
         </shape>
     </item>
 </layer-list>

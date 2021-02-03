@@ -1,14 +1,22 @@
 <resources>
-    <string name="app_name">Notes</string>
-    <string name="descriptionIconBack">Click to return back</string>
-    <string name="descriptionIconAccept">Click to accept creating new note</string>
-    <string name="transitionDetailsFrgCardView">cardViewDetailsTransitionName</string>
-    <string name="descriptionIconDelete">Click to delete current note</string>
+    <string name="appName">Notes</string>
+
+    <!-- Hints -->
     <string name="hintTitle">Title</string>
     <string name="hintContent">Content</string>
-    <string name="hintSearch">Click to search notes</string>
     <string name="hintSearchNotes">Search my notes</string>
     <string name="hintChooseColor">Choose note color</string>
+
+    <!-- Content descriptions -->
+    <string name="descriptionIconBack">Click to return back</string>
+    <string name="descriptionIconAccept">Click to accept creating new note</string>
     <string name="descriptionSelectedColor">Selected color icon</string>
     <string name="descriptionFab">Click to create new note</string>
+    <string name="descriptionIconDelete">Click to delete current note</string>
+    <string name="descriptionSearch">Click to search notes</string>
+
+    <!-- Other -->
+    <string name="transitionDetailsFrgCardView">cardViewDetailsTransitionName</string>
+    <string name="notificationEmptyNote">Note is empty</string>
+
 </resources>

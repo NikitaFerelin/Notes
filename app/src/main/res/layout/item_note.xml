@@ -13,8 +13,8 @@
         android:layout_marginStart="@dimen/extraSmallMargin"
         android:layout_marginTop="@dimen/smallMargin"
         android:layout_marginEnd="@dimen/extraSmallMargin"
-        android:background="@color/whiteCard"
-        android:backgroundTint="@color/whiteCard"
+        android:background="@color/white"
+        android:backgroundTint="@color/white"
         app:cardCornerRadius="@dimen/standardMargin"
         app:cardElevation="0dp">
 
@@ -22,7 +22,7 @@
             android:id="@+id/rootConstraint"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/whiteCard">
+            android:background="@color/white">
 
             <TextView
                 android:id="@+id/textViewTitle"
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/smallMargin"
                 android:layout_marginTop="@dimen/extraSmallMargin"
-                android:backgroundTint="@color/whiteCard"
+                android:backgroundTint="@color/white"
                 android:textSize="@dimen/smallTextSize"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -43,7 +43,7 @@
                 android:layout_width="0dp"
                 android:layout_marginTop="@dimen/extraSmallMargin"
                 android:layout_marginEnd="@dimen/extraSmallMargin"
-                android:background="@color/whiteCard"
+                android:background="@color/white"
                 android:maxHeight="150dp"
                 android:textSize="@dimen/smallTextSize"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -57,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_marginTop="@dimen/standardMargin"
                 android:layout_marginBottom="@dimen/extraSmallMargin"
-                android:background="@color/whiteCard"
+                android:background="@color/white"
                 android:textSize="@dimen/extraSmallTextSize"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@id/textViewContent"
@@ -69,12 +69,12 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginEnd="16dp"
-                android:background="@color/whiteCard"
+                android:background="@color/white"
                 android:contentDescription="@string/descriptionSelectedColor"
                 android:src="@drawable/ic_mark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/grayIcon" />
+                app:tint="@color/gray" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

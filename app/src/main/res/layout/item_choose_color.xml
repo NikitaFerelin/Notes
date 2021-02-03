@@ -15,7 +15,7 @@
         android:layout_marginStart="@dimen/largeMargin"
         android:layout_marginTop="@dimen/standardMargin"
         android:layout_marginEnd="@dimen/largeMargin"
-        android:background="@color/whiteCard"
+        android:background="@color/white"
         android:gravity="center"
         android:text="@string/hintChooseColor"
         android:textColor="@color/black"

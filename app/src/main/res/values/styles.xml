@@ -4,11 +4,13 @@
     <style name="textBridge">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@color/whiteBackground</item>
+        <item name="android:background">@color/whiteDark</item>
     </style>
 
+    <!-- Text Views -->
+
     <style name="textTitle" parent="textBridge">
-        <item name="android:textColor">@color/grayIcon</item>
+        <item name="android:textColor">@color/gray</item>
         <item name="android:textSize">@dimen/standardTextSize</item>
     </style>
 
@@ -18,16 +20,18 @@
     </style>
 
     <style name="textDate" parent="textBridge">
-        <item name="android:textColor">@color/grayIcon</item>
+        <item name="android:textColor">@color/gray</item>
         <item name="android:textSize">@dimen/smallTextSize</item>
     </style>
+
+    <!-- Edit Texts -->
 
     <style name="titleEditText" parent="textTitle">
         <item name="android:inputType">text</item>
         <item name="android:maxLines">1</item>
         <item name="android:imeOptions">flagNoExtractUi|flagNavigateNext</item>
         <item name="android:hint">@string/hintTitle</item>
-        <item name="android:textColorHint">@color/grayIcon</item>
+        <item name="android:textColorHint">@color/gray</item>
     </style>
 
     <style name="contentEditText" parent="textContent">
@@ -38,6 +42,8 @@
         <item name="android:gravity">start|top</item>
         <item name="android:layout_height">200dp</item>
     </style>
+
+    <!-- Other -->
 
     <style name="standardIcon">
         <item name="android:layout_width">@dimen/iconWidth</item>
@@ -53,6 +59,11 @@
     <style name="selectableView">
         <item name="android:layout_width">@dimen/selectableViewWidth</item>
         <item name="android:layout_height">@dimen/selectableViewHeight</item>
+    </style>
+
+    <style name="snackbar" parent="@style/Widget.MaterialComponents.Snackbar">
+        <item name="backgroundTint">@color/whiteDark</item>
+        <item name="android:layout_margin">16dp</item>
     </style>
 
 </resources>
