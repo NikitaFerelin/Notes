@@ -3,6 +3,7 @@ package com.ferelin.notes.ui.create
 import android.content.Context
 import android.text.Editable
 import androidx.core.os.bundleOf
+import com.ferelin.notes.R
 import com.ferelin.notes.utilits.ColorTransformer
 import com.ferelin.notes.utilits.NoteColors
 import com.ferelin.notes.utilits.TextTransformer
@@ -64,7 +65,7 @@ class CreatePresenter(private val context: Context) : MvpPresenter<CreateMvpView
                 hideKeyboard()
                 dismiss()
             }
-        } else viewState.showMessage("Note is empty") // TODO TEXT
+        } else viewState.showMessage(context.getString(R.string.notificationEmptyNote))
     }
 
     fun onBottomSheetClicked(bottomSheetState: Int) {

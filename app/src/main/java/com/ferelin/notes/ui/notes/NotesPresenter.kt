@@ -27,8 +27,7 @@ class NotesPresenter(context: Context) : MvpPresenter<NotesMvpView>() {
         }
     }
 
-    fun onFilterSetted(searchText: Editable) {
-        Log.d("Test", "${searchText.toString()} -- ")
+    fun onFilterInitialized(searchText: Editable) {
         if (searchText.toString().isNotEmpty()) {
             viewState.triggerFilter()
         }

@@ -1,6 +1,7 @@
 package com.ferelin.notes.ui.notes
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.transition.*
+import com.ferelin.notes.R
 import com.ferelin.notes.base.BaseFragment
 import com.ferelin.notes.databinding.FragmentNotesBinding
 import com.ferelin.repository.model.Note
@@ -68,8 +70,9 @@ class NotesFragment : BaseFragment(), NotesMvpView, Filterable {
         date: String,
         color: String,
     ) {
-        // TODO name
-        val extras = FragmentNavigatorExtras(holder.binding.rootCardView to "cardViewDetailsTransitionName")
+        val extras = FragmentNavigatorExtras(
+            holder.binding.rootCardView to requireContext().resources.getString(R.string.transitionDetailsFrgCardView)
+        )
         val action = NotesFragmentDirections.actionNotesFragmentToDetailsFragment(
             sDeleteNoteResponseKey,
             title,
@@ -176,12 +179,13 @@ class NotesFragment : BaseFragment(), NotesMvpView, Filterable {
     private fun setupFilter() {
         if (mFilter == null) {
             lifecycleScope.launch(Dispatchers.IO) {
+                mNotesLoadJob?.join()
                 withContext(Dispatchers.Main) {
                     mFilter = NotesFilter(mAdapter!!.notes.toList(), onResultsPublished = {
                         mPresenter.onResultsPublished(it)
                     })
                     setupFilterListener()
-                    mPresenter.onFilterSetted(mBinding.editTextSearch.text)
+                    mPresenter.onFilterInitialized(mBinding.editTextSearch.text)
                 }
             }
         } else setupFilterListener()

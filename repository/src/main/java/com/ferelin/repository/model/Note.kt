@@ -13,5 +13,5 @@ data class Note(
     @ColumnInfo val content: String,
     @ColumnInfo val date: String = SimpleDateFormat("d MMM HH:mm", Locale.getDefault()).format(Date()),
     @ColumnInfo val color: String,
-    val preContent: String = if (content.length > 250) content.substring(0, 250) else content,
+    val preContent: String = if (content.length > 150) "${content.substring(0, 150)}..." else content,
 )

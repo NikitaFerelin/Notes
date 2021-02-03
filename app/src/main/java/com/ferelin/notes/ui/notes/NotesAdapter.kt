@@ -1,6 +1,7 @@
 package com.ferelin.notes.ui.notes
 
 import android.content.res.ColorStateList
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.widget.ImageViewCompat

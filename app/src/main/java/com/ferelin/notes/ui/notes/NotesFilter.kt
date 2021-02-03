@@ -13,6 +13,7 @@ class NotesFilter(items: List<Note>, val onResultsPublished: (results: List<Note
                 item.date.toLowerCase(java.util.Locale.ROOT).contains(text)
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
         onResultsPublished(results!!.values as List<Note>)
     }
