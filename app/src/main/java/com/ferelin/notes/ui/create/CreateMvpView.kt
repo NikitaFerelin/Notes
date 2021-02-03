@@ -3,8 +3,6 @@ package com.ferelin.notes.ui.create
 import android.os.Bundle
 import com.ferelin.notes.base.AppMvpView
 import moxy.viewstate.strategy.AddToEndSingleStrategy
-import moxy.viewstate.strategy.AddToEndStrategy
-import moxy.viewstate.strategy.SingleStateStrategy
 import moxy.viewstate.strategy.StateStrategyType
 
 @StateStrategyType(AddToEndSingleStrategy::class)

@@ -3,7 +3,6 @@ package com.ferelin.notes.ui.notes
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
-import android.util.Log
 import com.ferelin.notes.ui.create.CreatePresenter
 import com.ferelin.repository.db.AppDataManager
 import com.ferelin.repository.model.Note
