@@ -2,6 +2,9 @@
 
     <style name="Theme.Notes" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimaryDark">@color/whiteBackground</item>
+        <item name="colorAccent">@color/orangeAccent</item>
+
+        <item name="android:fontFamily">@font/regular</item>
 
         <item name="android:background">@color/whiteBackground</item>
         <item name="android:textColor">@color/black</item>

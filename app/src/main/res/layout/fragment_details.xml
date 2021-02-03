@@ -2,81 +2,66 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clipToPadding="false"
-    android:fillViewport="true">
+    android:layout_height="match_parent">
 
+    <!--TODO try to remove material card view-->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/rootCardView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:backgroundTint="@color/whiteBackground"
-        android:transitionName="cardViewDetailsTransitionName">
+        android:transitionName="@string/transitionDetailsFrgCardView"
+        app:cardElevation="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/rootConstraint"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingHorizontal="24dp"
-            android:paddingTop="24dp">
+            android:padding="@dimen/largeMargin">
 
             <ImageView
                 android:id="@+id/imageViewBack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/standardIcon"
+                android:contentDescription="@string/descriptionIconBack"
                 android:src="@drawable/ic_arrow_back"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/imageViewDelete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/standardIcon"
+                android:contentDescription="@string/descriptionIconDelete"
                 android:src="@drawable/ic_delete_forever"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <View
                 android:id="@+id/viewColorIndicator"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginTop="8dp"
-                android:background="@color/orangeLight"
+                style="@style/viewIndicator"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/imageViewDelete" />
 
             <TextView
                 android:id="@+id/textViewTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@color/whiteBackground"
-                android:textColor="@color/grayIcon"
-                android:textColorHint="@color/grayIcon"
+                style="@style/textTitle"
+                android:layout_marginTop="@dimen/standardMargin"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/viewColorIndicator"
                 tools:text="Title" />
 
             <TextView
                 android:id="@+id/textViewContent"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:background="@color/whiteBackground"
-                android:gravity="top"
-                android:minHeight="100dp"
-                android:textColor="@color/black"
-                android:textCursorDrawable="@drawable/cursor_edit_text"
+                style="@style/textContent"
+                android:layout_marginTop="@dimen/smallMargin"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textViewTitle"
-                tools:text="dsafmoepwjforeglokerlgkeroger" />
+                tools:text="My test note. Fragment details themes manifest test styles pixel 3 api 30" />
 
             <TextView
                 android:id="@+id/textViewDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/textDate"
+                android:layout_marginTop="@dimen/smallMargin"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textViewContent"

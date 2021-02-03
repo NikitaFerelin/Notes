@@ -1,44 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardViewSearch"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="30dp"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="@dimen/largeMargin"
         app:cardBackgroundColor="@color/whiteSearchCard"
-        app:cardCornerRadius="24dp"
+        app:cardCornerRadius="@dimen/largeMargin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/imageViewSearch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/standardIcon"
             android:layout_gravity="center|start"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="@dimen/standardMargin"
             android:background="@color/whiteSearchCard"
+            android:contentDescription="@string/hintSearch"
             android:src="@drawable/ic_search" />
 
         <EditText
             android:id="@+id/editTextSearch"
+            style="@style/titleEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_marginStart="46dp"
             android:layout_marginEnd="34dp"
             android:background="@color/whiteSearchCard"
-            android:hint="Search my notes"
-            android:textColor="@color/grayText"
-            android:textColorHint="@color/grayText"
+            android:hint="@string/hintSearchNotes"
+            android:importantForAutofill="no"
             android:textSize="14sp" />
 
     </com.google.android.material.card.MaterialCardView>
@@ -47,8 +44,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginHorizontal="@dimen/smallMargin"
         android:orientation="vertical"
         android:overScrollMode="never"
         android:transitionGroup="true"
@@ -63,8 +59,9 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/standardMargin"
         android:backgroundTint="@color/orangeAccent"
+        android:contentDescription="@string/descriptionFab"
         android:src="@drawable/ic_add"
         app:borderWidth="0dp"
         app:elevation="0dp"
@@ -72,6 +69,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:rippleColor="@null"
         app:tint="@color/whiteCard" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

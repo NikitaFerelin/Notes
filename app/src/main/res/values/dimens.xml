@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="extraSmallMargin">8dp</dimen>
+    <dimen name="smallMargin">12dp</dimen>
+    <dimen name="standardMargin">16dp</dimen>
+    <dimen name="largeMargin">24dp</dimen>
+
+    <dimen name="iconWidth">24dp</dimen>
+    <dimen name="iconHeight">24dp</dimen>
+
+    <dimen name="standardTextSize">16sp</dimen>
+    <dimen name="smallTextSize">14sp</dimen>
+    <dimen name="extraSmallTextSize">12sp</dimen>
+
+    <dimen name="selectableViewWidth">30dp</dimen>
+    <dimen name="selectableViewHeight">30dp</dimen>
+</resources>

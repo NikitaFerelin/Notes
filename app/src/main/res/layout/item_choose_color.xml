@@ -5,20 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/background_choose_color"
-    android:paddingBottom="24dp"
+    android:paddingBottom="@dimen/largeMargin"
     app:behavior_peekHeight="45dp"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
     <TextView
         android:id="@+id/textViewHint"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="24dp"
+        style="@style/textTitle"
+        android:layout_marginStart="@dimen/largeMargin"
+        android:layout_marginTop="@dimen/standardMargin"
+        android:layout_marginEnd="@dimen/largeMargin"
         android:background="@color/whiteCard"
         android:gravity="center"
-        android:text="Choose note color"
+        android:text="@string/hintChooseColor"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,9 +25,8 @@
 
     <View
         android:id="@+id/viewSelectableDefault"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="24dp"
+        style="@style/selectableView"
+        android:layout_marginTop="@dimen/largeMargin"
         android:background="@drawable/background_note_color_1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/viewSelectableOrange"
@@ -37,8 +35,7 @@
 
     <View
         android:id="@+id/viewSelectableOrange"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        style="@style/selectableView"
         android:background="@drawable/background_note_color_2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/viewSelectableGray"
@@ -47,8 +44,7 @@
 
     <View
         android:id="@+id/viewSelectableGray"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        style="@style/selectableView"
         android:background="@drawable/background_note_color_3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/viewSelectableRed"
@@ -57,8 +53,7 @@
 
     <View
         android:id="@+id/viewSelectableRed"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        style="@style/selectableView"
         android:background="@drawable/background_note_color_4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -70,6 +65,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:background="@null"
+        android:contentDescription="@string/descriptionSelectedColor"
         android:elevation="1dp"
         android:src="@drawable/ic_check_unlocked"
         app:layout_constraintBottom_toBottomOf="@id/viewSelectableDefault"

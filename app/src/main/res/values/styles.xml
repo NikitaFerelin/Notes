@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="textBridge">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/whiteBackground</item>
+    </style>
+
+    <style name="textTitle" parent="textBridge">
+        <item name="android:textColor">@color/grayIcon</item>
+        <item name="android:textSize">@dimen/standardTextSize</item>
+    </style>
+
+    <style name="textContent" parent="textBridge">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/standardTextSize</item>
+    </style>
+
+    <style name="textDate" parent="textBridge">
+        <item name="android:textColor">@color/grayIcon</item>
+        <item name="android:textSize">@dimen/smallTextSize</item>
+    </style>
+
+    <style name="titleEditText" parent="textTitle">
+        <item name="android:inputType">text</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:imeOptions">flagNoExtractUi|flagNavigateNext</item>
+        <item name="android:hint">@string/hintTitle</item>
+        <item name="android:textColorHint">@color/grayIcon</item>
+    </style>
+
+    <style name="contentEditText" parent="textContent">
+        <item name="android:imeOptions">flagNoExtractUi</item>
+        <item name="android:inputType">textMultiLine</item>
+        <item name="android:hint">@string/hintContent</item>
+        <item name="android:textColorHint">@color/black</item>
+        <item name="android:gravity">start|top</item>
+        <item name="android:layout_height">200dp</item>
+    </style>
+
+    <style name="standardIcon">
+        <item name="android:layout_width">@dimen/iconWidth</item>
+        <item name="android:layout_height">@dimen/iconHeight</item>
+    </style>
+
+    <style name="viewIndicator">
+        <item name="android:layout_height">2dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginTop">@dimen/extraSmallMargin</item>
+    </style>
+
+    <style name="selectableView">
+        <item name="android:layout_width">@dimen/selectableViewWidth</item>
+        <item name="android:layout_height">@dimen/selectableViewHeight</item>
+    </style>
+
+</resources>
