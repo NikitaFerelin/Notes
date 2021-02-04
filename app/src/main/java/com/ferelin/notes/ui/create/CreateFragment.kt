@@ -32,7 +32,7 @@ class CreateFragment : BaseFragment(), CreateMvpView {
     fun provideDialogPresenterTag(): String = "Create"
 
     @ProvidePresenter
-    fun provideDialogPresenter() = CreatePresenter(requireContext())
+    fun provideDialogPresenter() = appComponent.createPresenter()
 
     private lateinit var mBinding: FragmentCreateNoteBinding
     private val mArguments: CreateFragmentArgs by navArgs()
@@ -47,10 +47,7 @@ class CreateFragment : BaseFragment(), CreateMvpView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupTransitions()
-        setupEditFields()
-        setupImageViews()
-        setupBottomSheet()
+        initSetUp()
 
         lifecycleScope.launch(Dispatchers.IO) {
             mPresenter.onViewPrepared(mArguments)
@@ -99,19 +96,19 @@ class CreateFragment : BaseFragment(), CreateMvpView {
         findNavController().popBackStack()
     }
 
-    override fun selectedColorIconToDefault() {
+    override fun changeIconConstraintsToDefault() {
         switchBottomSheetIconTo(R.id.viewSelectableDefault)
     }
 
-    override fun selectedColorIconToRed() {
+    override fun changeIconConstraintsToRed() {
         switchBottomSheetIconTo(R.id.viewSelectableRed)
     }
 
-    override fun selectedColorIconToGray() {
+    override fun changeIconConstraintsToGray() {
         switchBottomSheetIconTo(R.id.viewSelectableGray)
     }
 
-    override fun selectedColorIconToOrange() {
+    override fun chaneIconConstraintsToOrange() {
         switchBottomSheetIconTo(R.id.viewSelectableOrange)
     }
 
@@ -128,6 +125,13 @@ class CreateFragment : BaseFragment(), CreateMvpView {
         lifecycleScope.launch(Dispatchers.IO) {
             mPresenter.onSaveInstanceState(mBinding.editTextTitle.text, mBinding.editTextContent.text)
         }
+    }
+
+    private fun initSetUp() {
+        setupTransitions()
+        setupEditFields()
+        setupImageViews()
+        setupBottomSheet()
     }
 
     private fun setupTransitions() {

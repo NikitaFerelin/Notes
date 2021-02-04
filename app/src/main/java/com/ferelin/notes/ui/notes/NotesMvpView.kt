@@ -8,9 +8,9 @@ import moxy.viewstate.strategy.StateStrategyType
 @StateStrategyType(OneExecutionStateStrategy::class)
 interface NotesMvpView : AppMvpView, AdaptiveClickListener {
 
-    fun setupDetailFrgResultListener()
+    fun setUpDetailFrgResultListener()
 
-    fun setupCreateFrgResultListener()
+    fun setUpCreateFrgResultListener()
 
     fun replaceWithCreateFragment()
 

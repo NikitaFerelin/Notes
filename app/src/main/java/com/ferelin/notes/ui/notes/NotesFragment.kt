@@ -33,7 +33,7 @@ class NotesFragment : BaseFragment(), NotesMvpView, Filterable {
     fun provideDialogPresenterTag(): String = "Notes"
 
     @ProvidePresenter
-    fun provideDialogPresenter() = NotesPresenter(requireContext())
+    fun provideDialogPresenter() = appComponent.notesPresenter()
 
     private lateinit var mBinding: FragmentNotesBinding
     private var mAdapter: NotesAdapter? = null
@@ -56,10 +56,7 @@ class NotesFragment : BaseFragment(), NotesMvpView, Filterable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        postponeAnim()
-        setupRecyclerAdapter()
-        setupListeners()
-        setupFilter()
+        initSetUp()
     }
 
     override fun replaceWithDetailFragment(
@@ -127,20 +124,20 @@ class NotesFragment : BaseFragment(), NotesMvpView, Filterable {
         mFilter!!.filter(text)
     }
 
-    override fun setupDetailFrgResultListener() {
+    override fun setUpDetailFrgResultListener() {
         parentFragmentManager.setFragmentResultListener(sDeleteNoteResponseKey, this@NotesFragment) { _, _ ->
             lifecycleScope.launch(Dispatchers.IO) {
                 delay(350)
-                mPresenter.gotResultFromDetails(mAdapter!!.notes[mLastClickedNote])
+                mPresenter.gotResultFromDetailsFrg(mAdapter!!.notes[mLastClickedNote])
             }
         }
     }
 
-    override fun setupCreateFrgResultListener() {
+    override fun setUpCreateFrgResultListener() {
         parentFragmentManager.setFragmentResultListener(sAddNoteResponseKey, this@NotesFragment) { _, bundle ->
             lifecycleScope.launch(Dispatchers.IO) {
                 delay(350)
-                mPresenter.gotResultFromCreate(bundle)
+                mPresenter.gotResultFromCreateFrg(bundle)
             }
         }
     }
@@ -148,6 +145,13 @@ class NotesFragment : BaseFragment(), NotesMvpView, Filterable {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt(sLastClickedNoteSavedKey, mLastClickedNote)
+    }
+
+    private fun initSetUp() {
+        postponeAnim()
+        setupRecyclerAdapter()
+        setupListeners()
+        setupFilter()
     }
 
     private fun setupAnims() {

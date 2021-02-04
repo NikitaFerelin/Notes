@@ -8,7 +8,7 @@ import moxy.InjectViewState
 import moxy.MvpPresenter
 
 @InjectViewState
-class DetailsPresenter(private val context: Context) : MvpPresenter<DetailsMvpView>() {
+class DetailsPresenter(private val mContext: Context) : MvpPresenter<DetailsMvpView>() {
 
     private lateinit var mResponseKey: String
 
@@ -34,8 +34,8 @@ class DetailsPresenter(private val context: Context) : MvpPresenter<DetailsMvpVi
     }
 
     private fun adaptColor(color: String): Int {
-        return if (ColorTransformer.fromIntToString(context, NoteColors.DEFAULT_COLOR) == color) {
-            ColorTransformer.getSettableColor(context, NoteColors.ADAPTIVE_DEFAULT_COLOR)
+        return if (ColorTransformer.fromIntToString(mContext, NoteColors.DEFAULT_COLOR) == color) {
+            ColorTransformer.getSettableColor(mContext, NoteColors.ADAPTIVE_DEFAULT_COLOR)
         } else ColorTransformer.fromStringToInt(color)
     }
 }

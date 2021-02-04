@@ -10,8 +10,9 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.createDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class AppPreferencesHelper(context: Context) : PreferencesHelper {
+class AppPreferences @Inject constructor(context: Context) : PreferencesHelper {
 
     private val mDataStorePreferences: DataStore<Preferences> = context.createDataStore("NoteAppPreferences")
 
@@ -31,25 +32,31 @@ class AppPreferencesHelper(context: Context) : PreferencesHelper {
         arguments
     }
 
+    override suspend fun setLastNotePreferences(title: String, content: String, color: String) {
+        setLastNoteTitle(title)
+        setLastNoteContent(content)
+        setLastNoteColor(color)
+    }
+
     override suspend fun clearLastNote() {
         mDataStorePreferences.edit {
             it.clear()
         }
     }
 
-    override suspend fun setLastNoteTitle(title: String) {
+    private suspend fun setLastNoteTitle(title: String) {
         mDataStorePreferences.edit {
             it[mLastNoteTitleKey] = title
         }
     }
 
-    override suspend fun setLastNoteContent(content: String) {
+    private suspend fun setLastNoteContent(content: String) {
         mDataStorePreferences.edit {
             it[mLastNoteContentKey] = content
         }
     }
 
-    override suspend fun setLastNoteColor(color: String) {
+    private suspend fun setLastNoteColor(color: String) {
         mDataStorePreferences.edit {
             it[mLastNoteColorKey] = color
         }

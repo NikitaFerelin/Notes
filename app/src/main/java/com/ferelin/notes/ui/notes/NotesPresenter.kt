@@ -1,10 +1,9 @@
 package com.ferelin.notes.ui.notes
 
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import com.ferelin.notes.ui.create.CreatePresenter
-import com.ferelin.repository.db.AppDataManager
+import com.ferelin.repository.db.DataManagerHelper
 import com.ferelin.repository.model.Note
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -15,14 +14,12 @@ import moxy.InjectViewState
 import moxy.MvpPresenter
 
 @InjectViewState
-class NotesPresenter(context: Context) : MvpPresenter<NotesMvpView>() {
-
-    private val mDataManager = AppDataManager.getInstance(context)
+class NotesPresenter(private val mDataManager: DataManagerHelper) : MvpPresenter<NotesMvpView>() {
 
     fun onFragmentCreate() {
         viewState.apply {
-            setupCreateFrgResultListener()
-            setupDetailFrgResultListener()
+            setUpCreateFrgResultListener()
+            setUpDetailFrgResultListener()
         }
     }
 
@@ -48,7 +45,7 @@ class NotesPresenter(context: Context) : MvpPresenter<NotesMvpView>() {
         }
     }
 
-    suspend fun gotResultFromDetails(lastClickedNote: Note) {
+    suspend fun gotResultFromDetailsFrg(lastClickedNote: Note) {
         withContext(Dispatchers.Main) {
             viewState.apply {
                 removeLastClickedNote()
@@ -59,7 +56,7 @@ class NotesPresenter(context: Context) : MvpPresenter<NotesMvpView>() {
         mDataManager.removeNote(lastClickedNote)
     }
 
-    suspend fun gotResultFromCreate(bundle: Bundle) {
+    suspend fun gotResultFromCreateFrg(bundle: Bundle) {
         val title = bundle[CreatePresenter.NOTE_TITLE_KEY] as String
         val content = bundle[CreatePresenter.NOTE_CONTENT_KEY] as String
         val color = bundle[CreatePresenter.NOTE_COLOR_KEY] as String

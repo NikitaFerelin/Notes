@@ -7,7 +7,7 @@ import com.ferelin.notes.R
 import com.ferelin.notes.utilits.ColorTransformer
 import com.ferelin.notes.utilits.NoteColors
 import com.ferelin.notes.utilits.TextTransformer
-import com.ferelin.repository.db.AppDataManager
+import com.ferelin.repository.db.DataManagerHelper
 import com.ferelin.repository.db.response.Response
 import com.ferelin.repository.model.Note
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -19,9 +19,10 @@ import moxy.InjectViewState
 import moxy.MvpPresenter
 
 @InjectViewState
-class CreatePresenter(private val context: Context) : MvpPresenter<CreateMvpView>() {
-
-    private val mDataManager = AppDataManager.getInstance(context)
+class CreatePresenter constructor(
+    private val mContext: Context,
+    private val mDataManager: DataManagerHelper,
+) : MvpPresenter<CreateMvpView>() {
 
     private lateinit var mResponseKey: String
 
@@ -36,6 +37,7 @@ class CreatePresenter(private val context: Context) : MvpPresenter<CreateMvpView
         }
 
         mResponseKey = args.responseKey
+
         withContext(Dispatchers.Main) {
             viewState.setFocusToContentEdit()
             viewState.showKeyboard()
@@ -46,8 +48,8 @@ class CreatePresenter(private val context: Context) : MvpPresenter<CreateMvpView
         if (!isLocked) {
             val (transformedTitle, transformedContent) = TextTransformer.transform(title.toString(), content.toString())
             val color = if (mSelectedColor == mDefaultColor) {
-                ColorTransformer.fromIntToString(context, NoteColors.DEFAULT_COLOR)
-            } else ColorTransformer.fromIntToString(context, mSelectedColor)
+                ColorTransformer.fromIntToString(mContext, NoteColors.DEFAULT_COLOR)
+            } else ColorTransformer.fromIntToString(mContext, mSelectedColor)
 
             val result = bundleOf(
                 NOTE_CONTENT_KEY to transformedContent,
@@ -65,7 +67,7 @@ class CreatePresenter(private val context: Context) : MvpPresenter<CreateMvpView
                 hideKeyboard()
                 dismiss()
             }
-        } else viewState.showMessage(context.getString(R.string.notificationEmptyNote))
+        } else viewState.showMessage(mContext.getString(R.string.notificationEmptyNote))
     }
 
     fun onBottomSheetClicked(bottomSheetState: Int) {
@@ -76,22 +78,22 @@ class CreatePresenter(private val context: Context) : MvpPresenter<CreateMvpView
 
     fun onDefaultColorClicked() {
         changeColor(mDefaultColor)
-        viewState.selectedColorIconToDefault()
+        viewState.changeIconConstraintsToDefault()
     }
 
     fun onOrangeColorClicked() {
         changeColor(NoteColors.COLOR_ORANGE)
-        viewState.selectedColorIconToOrange()
+        viewState.chaneIconConstraintsToOrange()
     }
 
     fun onGrayColorClicked() {
         changeColor(NoteColors.COLOR_GRAY)
-        viewState.selectedColorIconToGray()
+        viewState.changeIconConstraintsToGray()
     }
 
     fun onRedColorClicked() {
         changeColor(NoteColors.COLOR_RED)
-        viewState.selectedColorIconToRed()
+        viewState.changeIconConstraintsToRed()
     }
 
     fun onTextChanged(content: Editable?, title: Editable?, isAcceptBtnLocked: Boolean) {
@@ -113,13 +115,13 @@ class CreatePresenter(private val context: Context) : MvpPresenter<CreateMvpView
     suspend fun onSaveInstanceState(title: Editable?, content: Editable?) {
         val titleStr = title?.toString() ?: ""
         val contentStr = content?.toString() ?: ""
-        val colorStr = ColorTransformer.fromIntToString(context, mSelectedColor)
-        mDataManager.setLastNote(titleStr, contentStr, colorStr)
+        val colorStr = ColorTransformer.fromIntToString(mContext, mSelectedColor)
+        mDataManager.setLastNotePreferences(titleStr, contentStr, colorStr)
     }
 
     private fun changeColor(color: Int) {
         if (mSelectedColor != color) {
-            val settableColor = ColorTransformer.getSettableColor(context, color)
+            val settableColor = ColorTransformer.getSettableColor(mContext, color)
             viewState.setSelectedColor(settableColor)
             mSelectedColor = color
         }
@@ -132,10 +134,10 @@ class CreatePresenter(private val context: Context) : MvpPresenter<CreateMvpView
                 setNote(note.title, note.content)
                 setSelectedColor(ColorTransformer.fromStringToInt(note.color))
                 when (note.color) {
-                    ColorTransformer.fromIntToString(context, NoteColors.ADAPTIVE_DEFAULT_COLOR) -> selectedColorIconToDefault()
-                    ColorTransformer.fromIntToString(context, NoteColors.COLOR_RED) -> selectedColorIconToRed()
-                    ColorTransformer.fromIntToString(context, NoteColors.COLOR_GRAY) -> selectedColorIconToGray()
-                    ColorTransformer.fromIntToString(context, NoteColors.COLOR_ORANGE) -> selectedColorIconToOrange()
+                    ColorTransformer.fromIntToString(mContext, NoteColors.ADAPTIVE_DEFAULT_COLOR) -> changeIconConstraintsToDefault()
+                    ColorTransformer.fromIntToString(mContext, NoteColors.COLOR_RED) -> changeIconConstraintsToRed()
+                    ColorTransformer.fromIntToString(mContext, NoteColors.COLOR_GRAY) -> changeIconConstraintsToGray()
+                    ColorTransformer.fromIntToString(mContext, NoteColors.COLOR_ORANGE) -> chaneIconConstraintsToOrange()
                 }
             }
         }

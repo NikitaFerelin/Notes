@@ -28,13 +28,13 @@ interface CreateMvpView : AppMvpView {
 
     fun setSelectedColor(color: Int)
 
-    fun selectedColorIconToDefault()
+    fun changeIconConstraintsToDefault()
 
-    fun selectedColorIconToRed()
+    fun changeIconConstraintsToRed()
 
-    fun selectedColorIconToGray()
+    fun changeIconConstraintsToGray()
 
-    fun selectedColorIconToOrange()
+    fun chaneIconConstraintsToOrange()
 
     fun dismiss()
 }

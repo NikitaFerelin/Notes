@@ -1,22 +1,20 @@
 package com.ferelin.repository.db.room
 
-import android.content.Context
 import com.ferelin.repository.model.Note
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class AppNotesDbHelper(context: Context) : NotesDbHelper {
-
-    private val mNotesRoom = NotesDb.getDatabase(context).noteDao()
+class AppNotesDb @Inject constructor(private val mNotesDb: NotesDb) : NotesDbHelper {
 
     override fun insertNote(note: Note) {
-        mNotesRoom.insert(note)
+        mNotesDb.noteDao().insert(note)
     }
 
     override fun removeNote(note: Note) {
-        mNotesRoom.delete(note)
+        mNotesDb.noteDao().delete(note)
     }
 
     override fun getNotes(): Flow<List<Note>> {
-        return mNotesRoom.getAll()
+        return mNotesDb.noteDao().getAll()
     }
 }

@@ -25,7 +25,7 @@ class DetailsFragment : BaseFragment(), DetailsMvpView {
     fun provideDialogPresenterTag(): String = "Details"
 
     @ProvidePresenter
-    fun provideDialogPresenter() = DetailsPresenter(requireContext())
+    fun provideDialogPresenter() = appComponent.detailsPresenter()
 
     private lateinit var mBinding: FragmentDetailsBinding
     private val mArguments: DetailsFragmentArgs by navArgs()
