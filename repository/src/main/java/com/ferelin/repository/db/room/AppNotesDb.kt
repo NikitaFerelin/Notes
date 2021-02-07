@@ -10,11 +10,23 @@ class AppNotesDb @Inject constructor(private val mNotesDb: NotesDb) : NotesDbHel
         mNotesDb.noteDao().insert(note)
     }
 
-    override fun removeNote(note: Note) {
+    override fun getNotes(): Flow<List<Note>> {
+        return mNotesDb.noteDao().getAll()
+    }
+
+    override fun getNote(id: Int): Flow<Note> {
+        return mNotesDb.noteDao().get(id)
+    }
+
+    override fun update(note: Note) {
+        mNotesDb.noteDao().update(note)
+    }
+
+    override fun deleteNote(note: Note) {
         mNotesDb.noteDao().delete(note)
     }
 
-    override fun getNotes(): Flow<List<Note>> {
-        return mNotesDb.noteDao().getAll()
+    override fun deleteNote(id: Int) {
+        mNotesDb.noteDao().delete(id)
     }
 }

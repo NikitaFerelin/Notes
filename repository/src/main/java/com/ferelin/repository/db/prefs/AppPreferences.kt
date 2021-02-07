@@ -12,9 +12,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class AppPreferences @Inject constructor(context: Context) : PreferencesHelper {
+open class AppPreferences @Inject constructor(context: Context, dataStoreName: String) : PreferencesHelper {
 
-    private val mDataStorePreferences: DataStore<Preferences> = context.createDataStore("NoteAppPreferences")
+    private val mDataStorePreferences: DataStore<Preferences> = context.createDataStore(dataStoreName)
 
     private val mLastNoteTitleKey = stringPreferencesKey("LAST_NOTE_TITLE_KEY")
     private val mLastNoteContentKey = stringPreferencesKey("LAST_NOTE_CONTENT_KEY")
@@ -32,34 +32,16 @@ class AppPreferences @Inject constructor(context: Context) : PreferencesHelper {
         arguments
     }
 
-    override suspend fun setLastNotePreferences(title: String, content: String, color: String) {
-        setLastNoteTitle(title)
-        setLastNoteContent(content)
-        setLastNoteColor(color)
+    override suspend fun saveLastNotePreferences(title: String, content: String, color: String) {
+        mDataStorePreferences.edit {
+            it[mLastNoteTitleKey] = title
+            it[mLastNoteContentKey] = content
+            it[mLastNoteColorKey] = color
+        }
     }
 
     override suspend fun clearLastNote() {
-        mDataStorePreferences.edit {
-            it.clear()
-        }
-    }
-
-    private suspend fun setLastNoteTitle(title: String) {
-        mDataStorePreferences.edit {
-            it[mLastNoteTitleKey] = title
-        }
-    }
-
-    private suspend fun setLastNoteContent(content: String) {
-        mDataStorePreferences.edit {
-            it[mLastNoteContentKey] = content
-        }
-    }
-
-    private suspend fun setLastNoteColor(color: String) {
-        mDataStorePreferences.edit {
-            it[mLastNoteColorKey] = color
-        }
+        mDataStorePreferences.edit { it.clear() }
     }
 
     companion object {

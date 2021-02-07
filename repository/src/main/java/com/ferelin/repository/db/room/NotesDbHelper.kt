@@ -7,7 +7,13 @@ interface NotesDbHelper {
 
     fun insertNote(note: Note)
 
-    fun removeNote(note: Note)
-
     fun getNotes(): Flow<List<Note>>
+
+    fun getNote(id: Int): Flow<Note>
+
+    fun update(note: Note)
+
+    fun deleteNote(note: Note)
+
+    fun deleteNote(id: Int)
 }

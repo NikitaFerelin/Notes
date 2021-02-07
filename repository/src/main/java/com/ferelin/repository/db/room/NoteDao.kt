@@ -6,6 +6,10 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NoteDao {
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(note: Note)
+
     @Query("SELECT * FROM Note")
     fun getAll(): Flow<List<Note>>
 
@@ -15,8 +19,8 @@ interface NoteDao {
     @Update
     fun update(note: Note)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(note: Note)
+    @Query("DELETE FROM note WHERE id = :id")
+    fun delete(id: Int)
 
     @Delete
     fun delete(note: Note)

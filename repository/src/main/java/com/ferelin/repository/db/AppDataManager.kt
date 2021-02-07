@@ -24,8 +24,8 @@ class AppDataManager @Inject constructor(
         } else Response.Success(Note(title = title, content = content, color = color))
     }
 
-    override suspend fun setLastNotePreferences(title: String, content: String, color: String) {
-        mPreferencesHelper.setLastNotePreferences(title, content, color)
+    override suspend fun saveLastNotePreferences(title: String, content: String, color: String) {
+        mPreferencesHelper.saveLastNotePreferences(title, content, color)
     }
 
     override suspend fun getLastNotePreferences(): Flow<Bundle> {
@@ -36,15 +36,27 @@ class AppDataManager @Inject constructor(
         mPreferencesHelper.clearLastNote()
     }
 
+    override fun update(note: Note) {
+        mNotesDbHelper.update(note)
+    }
+
     override fun insertNote(note: Note) {
         mNotesDbHelper.insertNote(note)
     }
 
-    override fun removeNote(note: Note) {
-        mNotesDbHelper.removeNote(note)
+    override fun deleteNote(id: Int) {
+        mNotesDbHelper.deleteNote(id)
+    }
+
+    override fun deleteNote(note: Note) {
+        mNotesDbHelper.deleteNote(note)
     }
 
     override fun getNotes(): Flow<List<Note>> {
         return mNotesDbHelper.getNotes()
+    }
+
+    override fun getNote(id: Int): Flow<Note> {
+        return mNotesDbHelper.getNote(id)
     }
 }

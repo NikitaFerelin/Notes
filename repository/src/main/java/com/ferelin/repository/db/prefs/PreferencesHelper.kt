@@ -7,7 +7,7 @@ interface PreferencesHelper {
 
     suspend fun getLastNotePreferences(): Flow<Bundle>
 
-    suspend fun setLastNotePreferences(title: String, content: String, color: String)
+    suspend fun saveLastNotePreferences(title: String, content: String, color: String)
 
     suspend fun clearLastNote()
 }
