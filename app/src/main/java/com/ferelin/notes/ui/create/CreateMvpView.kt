@@ -34,7 +34,7 @@ interface CreateMvpView : AppMvpView {
 
     fun changeIconConstraintsToGray()
 
-    fun chaneIconConstraintsToOrange()
+    fun changeIconConstraintsToOrange()
 
     fun dismiss()
 }

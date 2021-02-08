@@ -56,7 +56,7 @@ class NotesAdapter(private val mClickListener: AdaptiveClickListener) : Recycler
         notifyDataSetChanged()
     }
 
-    class NoteViewHolder private constructor(val binding: ItemNoteBinding) : RecyclerView.ViewHolder(binding.root) {
+    open class NoteViewHolder private constructor(val binding: ItemNoteBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Note) {
             binding.apply {

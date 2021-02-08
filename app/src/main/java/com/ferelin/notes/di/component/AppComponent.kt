@@ -19,10 +19,9 @@ interface AppComponent {
         fun create(@BindsInstance context: Context): AppComponent
     }
 
-    fun dataManager() : DataManagerHelper
+    fun dataManager(): DataManagerHelper
 
-
-    fun createPresenter() : CreatePresenter
-    fun detailsPresenter() : DetailsPresenter
-    fun notesPresenter() : NotesPresenter
+    fun createPresenter(): CreatePresenter
+    fun detailsPresenter(): DetailsPresenter
+    fun notesPresenter(): NotesPresenter
 }

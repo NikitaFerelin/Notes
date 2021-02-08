@@ -16,7 +16,8 @@ object TextTransformer {
                 tempContent = "$tempTitle. $tempContent"
                 tempTitle = "${tempContent.substring(0, 10)}..."
             }
-            tempTitle.trim().isEmpty() && tempContent.trim().isEmpty() -> tempContent = R.string.appName.toString()
+            // TODO FIX чтобы не попадала пустая строка сюда
+            tempTitle.trim().isEmpty() && tempContent.trim().isEmpty() -> tempContent = R.string.hintEmptyNote.toString()
         }
 
         return arrayOf(tempTitle, tempContent)

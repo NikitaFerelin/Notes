@@ -5,23 +5,25 @@ import android.text.Editable
 import androidx.core.os.bundleOf
 import com.ferelin.notes.R
 import com.ferelin.notes.utilits.ColorTransformer
+import com.ferelin.notes.utilits.CoroutineContextProvider
 import com.ferelin.notes.utilits.NoteColors
 import com.ferelin.notes.utilits.TextTransformer
 import com.ferelin.repository.db.DataManagerHelper
 import com.ferelin.repository.db.response.Response
 import com.ferelin.repository.model.Note
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
 import moxy.MvpPresenter
 
 @InjectViewState
-class CreatePresenter constructor(
+open class CreatePresenter constructor(
     private val mContext: Context,
     private val mDataManager: DataManagerHelper,
+    private val mCoroutineProvider: CoroutineContextProvider,
 ) : MvpPresenter<CreateMvpView>() {
 
     private lateinit var mResponseKey: String
@@ -29,22 +31,22 @@ class CreatePresenter constructor(
     private val mDefaultColor = NoteColors.ADAPTIVE_DEFAULT_COLOR
     private var mSelectedColor = mDefaultColor
 
-    suspend fun onViewPrepared(args: CreateFragmentArgs) {
-        mDataManager.getLastNote().take(1).collect {
-            withContext(Dispatchers.Main) {
-                recoverNote(viewState, it)
+    fun onViewPrepared(args: CreateFragmentArgs) {
+        CoroutineScope(mCoroutineProvider.IO).launch {
+            mDataManager.getLastNote().first().also {
+                withContext(mCoroutineProvider.MAIN) {
+                    recoverNote(it)
+                }
             }
         }
 
         mResponseKey = args.responseKey
 
-        withContext(Dispatchers.Main) {
-            viewState.setFocusToContentEdit()
-            viewState.showKeyboard()
-        }
+        viewState.setFocusToContentEdit()
+        viewState.showKeyboard()
     }
 
-    suspend fun onAcceptBtnClicked(isLocked: Boolean, title: Editable, content: Editable) {
+    fun onAcceptBtnClicked(isLocked: Boolean, title: Editable, content: Editable) {
         if (!isLocked) {
             val (transformedTitle, transformedContent) = TextTransformer.transform(title.toString(), content.toString())
             val color = if (mSelectedColor == mDefaultColor) {
@@ -52,13 +54,13 @@ class CreatePresenter constructor(
             } else ColorTransformer.fromIntToString(mContext, mSelectedColor)
 
             val result = bundleOf(
-                NOTE_CONTENT_KEY to transformedContent,
                 NOTE_TITLE_KEY to transformedTitle,
+                NOTE_CONTENT_KEY to transformedContent,
                 NOTE_COLOR_KEY to color
             )
 
             // Current note is accepted and will be saved -> no longer need to store in dataStore
-            withContext(Dispatchers.IO) {
+            CoroutineScope(mCoroutineProvider.IO).launch {
                 mDataManager.clearLastNote()
             }
 
@@ -83,7 +85,7 @@ class CreatePresenter constructor(
 
     fun onOrangeColorClicked() {
         changeColor(NoteColors.COLOR_ORANGE)
-        viewState.chaneIconConstraintsToOrange()
+        viewState.changeIconConstraintsToOrange()
     }
 
     fun onGrayColorClicked() {
@@ -116,7 +118,7 @@ class CreatePresenter constructor(
         val titleStr = title?.toString() ?: ""
         val contentStr = content?.toString() ?: ""
         val colorStr = ColorTransformer.fromIntToString(mContext, mSelectedColor)
-        mDataManager.setLastNotePreferences(titleStr, contentStr, colorStr)
+        mDataManager.saveLastNotePreferences(titleStr, contentStr, colorStr)
     }
 
     private fun changeColor(color: Int) {
@@ -127,17 +129,19 @@ class CreatePresenter constructor(
         }
     }
 
-    private fun recoverNote(view: CreateMvpView, response: Response<Note>) {
+    private fun recoverNote(response: Response<Note>) {
         if (response is Response.Success) {
             val note = response.data
-            view.apply {
+            viewState.apply {
                 setNote(note.title, note.content)
                 setSelectedColor(ColorTransformer.fromStringToInt(note.color))
                 when (note.color) {
-                    ColorTransformer.fromIntToString(mContext, NoteColors.ADAPTIVE_DEFAULT_COLOR) -> changeIconConstraintsToDefault()
+                    ColorTransformer.fromIntToString(mContext,
+                        NoteColors.ADAPTIVE_DEFAULT_COLOR),
+                    -> changeIconConstraintsToDefault()
                     ColorTransformer.fromIntToString(mContext, NoteColors.COLOR_RED) -> changeIconConstraintsToRed()
                     ColorTransformer.fromIntToString(mContext, NoteColors.COLOR_GRAY) -> changeIconConstraintsToGray()
-                    ColorTransformer.fromIntToString(mContext, NoteColors.COLOR_ORANGE) -> chaneIconConstraintsToOrange()
+                    ColorTransformer.fromIntToString(mContext, NoteColors.COLOR_ORANGE) -> changeIconConstraintsToOrange()
                 }
             }
         }

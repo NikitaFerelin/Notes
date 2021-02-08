@@ -48,10 +48,7 @@ class CreateFragment : BaseFragment(), CreateMvpView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initSetUp()
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            mPresenter.onViewPrepared(mArguments)
-        }
+        mPresenter.onViewPrepared(mArguments)
     }
 
     override fun setResult(arg: Bundle, responseKey: String) {
@@ -108,7 +105,7 @@ class CreateFragment : BaseFragment(), CreateMvpView {
         switchBottomSheetIconTo(R.id.viewSelectableGray)
     }
 
-    override fun chaneIconConstraintsToOrange() {
+    override fun changeIconConstraintsToOrange() {
         switchBottomSheetIconTo(R.id.viewSelectableOrange)
     }
 

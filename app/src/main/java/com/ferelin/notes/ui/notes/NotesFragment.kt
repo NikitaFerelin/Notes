@@ -126,19 +126,13 @@ class NotesFragment : BaseFragment(), NotesMvpView, Filterable {
 
     override fun setUpDetailFrgResultListener() {
         parentFragmentManager.setFragmentResultListener(sDeleteNoteResponseKey, this@NotesFragment) { _, _ ->
-            lifecycleScope.launch(Dispatchers.IO) {
-                delay(350)
-                mPresenter.gotResultFromDetailsFrg(mAdapter!!.notes[mLastClickedNote])
-            }
+            mPresenter.gotResultFromDetailsFrg(mAdapter!!.notes[mLastClickedNote])
         }
     }
 
     override fun setUpCreateFrgResultListener() {
         parentFragmentManager.setFragmentResultListener(sAddNoteResponseKey, this@NotesFragment) { _, bundle ->
-            lifecycleScope.launch(Dispatchers.IO) {
-                delay(350)
-                mPresenter.gotResultFromCreateFrg(bundle)
-            }
+            mPresenter.gotResultFromCreateFrg(bundle)
         }
     }
 

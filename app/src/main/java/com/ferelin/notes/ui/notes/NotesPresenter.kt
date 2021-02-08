@@ -3,18 +3,22 @@ package com.ferelin.notes.ui.notes
 import android.os.Bundle
 import android.text.Editable
 import com.ferelin.notes.ui.create.CreatePresenter
+import com.ferelin.notes.utilits.CoroutineContextProvider
 import com.ferelin.repository.db.DataManagerHelper
 import com.ferelin.repository.model.Note
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 import moxy.InjectViewState
 import moxy.MvpPresenter
 
 @InjectViewState
-class NotesPresenter(private val mDataManager: DataManagerHelper) : MvpPresenter<NotesMvpView>() {
+class NotesPresenter(
+    private val mDataManager: DataManagerHelper,
+    private val mCoroutineProvider: CoroutineContextProvider,
+) : MvpPresenter<NotesMvpView>() {
 
     fun onFragmentCreate() {
         viewState.apply {
@@ -45,30 +49,32 @@ class NotesPresenter(private val mDataManager: DataManagerHelper) : MvpPresenter
         }
     }
 
-    suspend fun gotResultFromDetailsFrg(lastClickedNote: Note) {
-        withContext(Dispatchers.Main) {
-            viewState.apply {
-                removeLastClickedNote()
-                removeNoteFromFilter(lastClickedNote)
-                triggerFilter()
-            }
+    fun gotResultFromDetailsFrg(lastClickedNote: Note) {
+        viewState.apply {
+            removeLastClickedNote()
+            removeNoteFromFilter(lastClickedNote)
+            triggerFilter()
         }
-        mDataManager.removeNote(lastClickedNote)
+
+        CoroutineScope(mCoroutineProvider.IO).launch {
+            mDataManager.deleteNote(lastClickedNote)
+        }
     }
 
-    suspend fun gotResultFromCreateFrg(bundle: Bundle) {
+    fun gotResultFromCreateFrg(bundle: Bundle) {
         val title = bundle[CreatePresenter.NOTE_TITLE_KEY] as String
         val content = bundle[CreatePresenter.NOTE_CONTENT_KEY] as String
         val color = bundle[CreatePresenter.NOTE_COLOR_KEY] as String
         val newNote = Note(title = title, content = content, color = color)
 
-        withContext(Dispatchers.Main) {
-            viewState.apply {
-                addNote(newNote)
-                addNoteToFilter(newNote)
-            }
+        viewState.apply {
+            addNote(newNote)
+            addNoteToFilter(newNote)
         }
-        mDataManager.insertNote(newNote)
+
+        CoroutineScope(mCoroutineProvider.IO).launch {
+            mDataManager.insertNote(newNote)
+        }
     }
 
     fun onFabClicked() {

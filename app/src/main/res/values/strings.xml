@@ -6,6 +6,7 @@
     <string name="hintContent">Content</string>
     <string name="hintSearchNotes">Search my notes</string>
     <string name="hintChooseColor">Choose note color</string>
+    <string name="hintEmptyNote">Empty note</string>
 
     <!-- Content descriptions -->
     <string name="descriptionIconBack">Click to return back</string>
