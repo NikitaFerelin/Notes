@@ -10,18 +10,18 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class AppDataManager @Inject constructor(
+open class AppDataManager @Inject constructor(
     private val mPreferencesHelper: PreferencesHelper,
     private val mNotesDbHelper: NotesDbHelper,
 ) : DataManagerHelper {
 
     override suspend fun getLastNote(): Flow<Response<Note>> = mPreferencesHelper.getLastNotePreferences().map {
-        val title = it[AppPreferences.sTitleBundleKey].toString()
-        val content = it[AppPreferences.sContentBundleKey].toString()
-        val color = it[AppPreferences.sColorBundleKey].toString()
-        if ((title.isEmpty() || content.isEmpty()) && color.isEmpty()) {
-            Response.Failed()
-        } else Response.Success(Note(title = title, content = content, color = color))
+        val title = it[AppPreferences.TITLE_BUNDLE_KEY].toString()
+        val content = it[AppPreferences.CONTENT_BUNDLE_KEY].toString()
+        val color = it[AppPreferences.COLOR_BUNDLE_KEY].toString()
+
+        if (title.isEmpty()) Response.Failed()
+        else Response.Success(Note(title = title, content = content, color = color))
     }
 
     override suspend fun saveLastNotePreferences(title: String, content: String, color: String) {

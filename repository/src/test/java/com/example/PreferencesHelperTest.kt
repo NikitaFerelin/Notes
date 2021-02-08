@@ -2,6 +2,7 @@ package com.example
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import com.example.provider.RepTestingDataProvider
 import com.ferelin.repository.db.prefs.AppPreferences
 import com.ferelin.repository.db.prefs.PreferencesHelper
 import kotlinx.coroutines.flow.first
@@ -19,9 +20,7 @@ class PreferencesHelperTest {
 
     private lateinit var mPreferencesHelper: PreferencesHelper
 
-    private val mTestTitle = "title"
-    private val mTestContent = "content"
-    private val mTestColor = "#000000"
+    private val mTestNote = RepTestingDataProvider().defaultNote
 
     @Before
     fun setUp() {
@@ -30,38 +29,34 @@ class PreferencesHelperTest {
     }
 
     @Test
-    fun correctSaveNote() {
-        runBlocking {
-            mPreferencesHelper.saveLastNotePreferences(mTestTitle, mTestContent, mTestColor)
-            mPreferencesHelper.getLastNotePreferences().first().also {
-                Assert.assertEquals(mTestTitle, it[AppPreferences.sTitleBundleKey]!!)
-                Assert.assertEquals(mTestContent, it[AppPreferences.sContentBundleKey]!!)
-                Assert.assertEquals(mTestColor, it[AppPreferences.sColorBundleKey]!!)
-            }
+    fun saveAndGetNote(): Unit = runBlocking {
+        mPreferencesHelper.saveLastNotePreferences(mTestNote.title, mTestNote.content, mTestNote.color)
+        mPreferencesHelper.getLastNotePreferences().first().also {
+            Assert.assertEquals(mTestNote.title, it[AppPreferences.TITLE_BUNDLE_KEY]!!)
+            Assert.assertEquals(mTestNote.content, it[AppPreferences.CONTENT_BUNDLE_KEY]!!)
+            Assert.assertEquals(mTestNote.color, it[AppPreferences.COLOR_BUNDLE_KEY]!!)
         }
     }
 
     @Test
-    fun getNoteWhenNoData() {
-        runBlocking {
-            mPreferencesHelper.getLastNotePreferences().first().also {
-                Assert.assertEquals("", it[AppPreferences.sTitleBundleKey]!!)
-                Assert.assertEquals("", it[AppPreferences.sContentBundleKey]!!)
-                Assert.assertEquals("", it[AppPreferences.sColorBundleKey]!!)
-            }
+    fun getNoteWhenNoSource(): Unit = runBlocking {
+        mPreferencesHelper.getLastNotePreferences().first().also {
+            Assert.assertEquals("", it[AppPreferences.TITLE_BUNDLE_KEY]!!)
+            Assert.assertEquals("", it[AppPreferences.CONTENT_BUNDLE_KEY]!!)
+            Assert.assertEquals("", it[AppPreferences.COLOR_BUNDLE_KEY]!!)
         }
     }
 
-    /*@Test TODO IOException: Unable to rename
+    /*@Test TODO IOException Unable to rename ????
     fun correctClearNote() {
-        runBlocking {
-            mPreferencesHelper.saveLastNotePreferences(mTestTitle, mTestContent, mTestColor)
-            mPreferencesHelper.clearLastNote()
-            mPreferencesHelper.getLastNotePreferences().first().also {
-                Assert.assertEquals("", it[AppPreferences.sTitleBundleKey]!!)
-                Assert.assertEquals("", it[AppPreferences.sContentBundleKey]!!)
-                Assert.assertEquals("", it[AppPreferences.sColorBundleKey]!!)
-            }
+        val note = mTestDataProvider.defaultNote
+
+        mPreferencesHelper.saveLastNotePreferences(note.title, note.content, note.color)
+        mPreferencesHelper.clearLastNote()
+        mPreferencesHelper.getLastNotePreferences().first().also {
+            Assert.assertEquals("", it[AppPreferences.sTitleBundleKey]!!)
+            Assert.assertEquals("", it[AppPreferences.sContentBundleKey]!!)
+            Assert.assertEquals("", it[AppPreferences.sColorBundleKey]!!)
         }
     }*/
 }

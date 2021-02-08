@@ -25,9 +25,9 @@ open class AppPreferences @Inject constructor(context: Context, dataStoreName: S
         val content = it[mLastNoteContentKey] ?: ""
         val color = it[mLastNoteColorKey] ?: ""
         val arguments = bundleOf(
-            sTitleBundleKey to title,
-            sContentBundleKey to content,
-            sColorBundleKey to color
+            TITLE_BUNDLE_KEY to title,
+            CONTENT_BUNDLE_KEY to content,
+            COLOR_BUNDLE_KEY to color
         )
         arguments
     }
@@ -45,8 +45,8 @@ open class AppPreferences @Inject constructor(context: Context, dataStoreName: S
     }
 
     companion object {
-        const val sTitleBundleKey = "LAST_NOTE_TITLE_BUNDLE_KEY"
-        const val sContentBundleKey = "LAST_NOTE_CONTENT_BUNDLE_KEY"
-        const val sColorBundleKey = "LAST_NOTE_COLOR_BUNDLE_KEY"
+        const val TITLE_BUNDLE_KEY = "LAST_NOTE_TITLE_BUNDLE_KEY"
+        const val CONTENT_BUNDLE_KEY = "LAST_NOTE_CONTENT_BUNDLE_KEY"
+        const val COLOR_BUNDLE_KEY = "LAST_NOTE_COLOR_BUNDLE_KEY"
     }
 }

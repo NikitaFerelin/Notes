@@ -3,16 +3,15 @@ package com.example
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
+import com.example.provider.RepTestingDataProvider
 import com.ferelin.repository.db.room.AppNotesDb
 import com.ferelin.repository.db.room.NotesDb
 import com.ferelin.repository.db.room.NotesDbHelper
-import com.ferelin.repository.model.Note
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -28,10 +27,9 @@ class RoomHelperTest {
 
     private lateinit var mDatabase: NotesDb
     private lateinit var mDatabaseHelper: NotesDbHelper
-    private lateinit var mTestNote: Note
 
+    private val mTestNote = RepTestingDataProvider().defaultNote
     private val mTestDispatcher = TestCoroutineDispatcher()
-    private val mTestScope = TestCoroutineScope(mTestDispatcher)
 
     @Before
     fun setUp() {
@@ -42,75 +40,64 @@ class RoomHelperTest {
             .allowMainThreadQueries()
             .build()
         mDatabaseHelper = AppNotesDb(mDatabase)
-        mTestNote = Note(id = 1, title = "Note1", content = "Content1", color = "Color1")
     }
 
     @Test
-    fun insert() {
-        mTestScope.runBlockingTest {
-            mDatabaseHelper.insertNote(mTestNote)
-            mDatabaseHelper.getNotes().first().also {
-                val note = it[0]
-                Assert.assertEquals(note.title, mTestNote.title)
-                Assert.assertEquals(note.content, mTestNote.content)
-                Assert.assertEquals(note.color, mTestNote.color)
-            }
+    fun insert(): Unit = runBlocking {
+        mDatabaseHelper.insertNote(mTestNote)
+        mDatabaseHelper.getNotes().first().also {
+            val note = it[0]
+            Assert.assertEquals(note.title, mTestNote.title)
+            Assert.assertEquals(note.content, mTestNote.content)
+            Assert.assertEquals(note.color, mTestNote.color)
         }
     }
 
     @Test
-    fun getNotes() {
-        mTestScope.runBlockingTest {
-            mDatabaseHelper.insertNote(mTestNote)
-            mDatabaseHelper.getNotes().first().also {
-                Assert.assertEquals(1, it.size)
-                Assert.assertEquals(mTestNote.title, it[0].title)
-                Assert.assertEquals(mTestNote.content, it[0].content)
-            }
+    fun getNotes(): Unit = runBlocking {
+        mDatabaseHelper.insertNote(mTestNote)
+        mDatabaseHelper.getNotes().first().also {
+            Assert.assertEquals(1, it.size)
+            Assert.assertEquals(mTestNote.title, it[0].title)
+            Assert.assertEquals(mTestNote.content, it[0].content)
         }
     }
 
     @Test
-    fun getNoteById() {
-        mTestScope.runBlockingTest {
-            mDatabaseHelper.insertNote(mTestNote)
-            mDatabaseHelper.getNotes().first().also {
-                Assert.assertEquals(mTestNote.id, it[0].id)
-            }
+    fun getNoteById(): Unit = runBlocking {
+        mDatabaseHelper.insertNote(mTestNote)
+        mDatabaseHelper.getNotes().first().also {
+            Assert.assertEquals(mTestNote.id, it[0].id)
         }
     }
 
     @Test
-    fun update() {
-        mTestScope.runBlockingTest {
-            val newNote = mTestNote.copy(title = "NewTitle")
-            mDatabaseHelper.insertNote(mTestNote)
-            mDatabaseHelper.update(newNote)
-            mDatabaseHelper.getNotes().first().also {
-                Assert.assertEquals(newNote.title, it[0].title)
-            }
+    fun update(): Unit = runBlocking {
+        val newNote = mTestNote.copy(title = "NewTitle")
+
+        mDatabaseHelper.insertNote(mTestNote)
+        mDatabaseHelper.update(newNote)
+        mDatabaseHelper.getNotes().first().also {
+            Assert.assertEquals(newNote.title, it[0].title)
         }
     }
 
     @Test
-    fun removeNote() {
-        mTestScope.runBlockingTest {
-            mDatabaseHelper.insertNote(mTestNote)
-            mDatabaseHelper.deleteNote(mTestNote)
-            mDatabaseHelper.getNotes().first().also {
-                Assert.assertEquals(true, it.isEmpty())
-            }
+    fun removeNote(): Unit = runBlocking {
+        mDatabaseHelper.insertNote(mTestNote)
+        mDatabaseHelper.deleteNote(mTestNote)
+        mDatabaseHelper.getNotes().first().also {
+            Assert.assertEquals(true, it.isEmpty())
         }
+
     }
 
     @Test
-    fun removeNoteById() {
-        mTestScope.runBlockingTest {
-            mDatabaseHelper.insertNote(mTestNote)
-            mDatabaseHelper.deleteNote(mTestNote.id)
-            mDatabaseHelper.getNotes().first().also {
-                Assert.assertEquals(true, it.isEmpty())
-            }
+    fun removeNoteById(): Unit = runBlocking {
+        mDatabaseHelper.insertNote(mTestNote)
+        mDatabaseHelper.deleteNote(mTestNote.id)
+        mDatabaseHelper.getNotes().first().also {
+            Assert.assertEquals(true, it.isEmpty())
         }
     }
 

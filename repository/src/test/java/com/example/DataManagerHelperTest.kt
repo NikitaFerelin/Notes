@@ -1,7 +1,9 @@
 package com.example
 
 import android.content.Context
+import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
+import com.example.provider.RepTestingDataProvider
 import com.ferelin.repository.db.AppDataManager
 import com.ferelin.repository.db.DataManagerHelper
 import com.ferelin.repository.db.prefs.AppPreferences
@@ -10,7 +12,6 @@ import com.ferelin.repository.db.response.Response
 import com.ferelin.repository.db.room.AppNotesDb
 import com.ferelin.repository.db.room.NotesDb
 import com.ferelin.repository.db.room.NotesDbHelper
-import com.ferelin.repository.model.Note
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -25,42 +26,37 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 class DataManagerHelperTest {
 
-    private lateinit var mDataManagerHelper: DataManagerHelper
     private lateinit var mDatabase: NotesDb
-    private lateinit var mTestNote: Note
+    private lateinit var mDataManagerHelper: DataManagerHelper
+
+    private val mTestNote = RepTestingDataProvider().defaultNote
 
     @Before
     fun setUp() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val appPreferencesHelper: PreferencesHelper = AppPreferences(context, "testDataStore")
-        mDatabase = NotesDb.getDatabase(context)
-        val notesDbHelper: NotesDbHelper = AppNotesDb(mDatabase)
-
+        mDatabase = Room.inMemoryDatabaseBuilder(context, NotesDb::class.java).allowMainThreadQueries().build()
+        val notesDbHelper = AppNotesDb(mDatabase) as NotesDbHelper
         mDataManagerHelper = AppDataManager(appPreferencesHelper, notesDbHelper)
-        mTestNote = Note(title = "TestNote", content = "TestContent", color = "#000000")
     }
 
     @Test
-    fun successResponse() {
-        runBlocking {
-            mDataManagerHelper.saveLastNotePreferences(mTestNote.title, mTestNote.content, mTestNote.color)
-            mDataManagerHelper.getLastNote().first().also {
-                Assert.assertEquals(true, it is Response.Success)
+    fun successResponse(): Unit = runBlocking {
+        mDataManagerHelper.saveLastNotePreferences(mTestNote.title, mTestNote.content, mTestNote.color)
+        mDataManagerHelper.getLastNote().first().also {
+            Assert.assertEquals(true, it is Response.Success)
 
-                val note = (it as Response.Success).data
-                Assert.assertEquals(mTestNote.title, note.title)
-                Assert.assertEquals(mTestNote.content, note.content)
-                Assert.assertEquals(mTestNote.color, note.color)
-            }
+            val note = (it as Response.Success).data
+            Assert.assertEquals(mTestNote.title, note.title)
+            Assert.assertEquals(mTestNote.content, note.content)
+            Assert.assertEquals(mTestNote.color, note.color)
         }
     }
 
     @Test
-    fun failedResponse() {
-        runBlocking {
-            mDataManagerHelper.getLastNote().first().also {
-                Assert.assertEquals(true, it is Response.Failed)
-            }
+    fun failedResponse(): Unit = runBlocking {
+        mDataManagerHelper.getLastNote().first().also {
+            Assert.assertEquals(true, it is Response.Failed)
         }
     }
 
