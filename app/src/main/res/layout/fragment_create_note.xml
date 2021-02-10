@@ -21,6 +21,7 @@
                 android:padding="@dimen/largeMargin">
 
                 <ImageView
+                    android:id="@+id/imageViewBack"
                     style="@style/standardIcon"
                     android:contentDescription="@string/descriptionIconBack"
                     android:src="@drawable/ic_arrow_back"
@@ -68,6 +69,8 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <include layout="@layout/item_choose_color" />
+    <include
+        android:id="@+id/rootBottomSheet"
+        layout="@layout/item_choose_color" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

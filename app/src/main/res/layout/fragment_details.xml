@@ -13,6 +13,7 @@
         android:padding="@dimen/largeMargin">
 
         <ImageView
+            android:id="@+id/imageViewBack"
             style="@style/standardIcon"
             android:contentDescription="@string/descriptionIconBack"
             android:src="@drawable/ic_arrow_back"
@@ -52,6 +53,7 @@
             tools:text="My test note. Fragment details themes manifest test styles pixel 3 api 30" />
 
         <TextView
+            android:id="@+id/textViewDate"
             style="@style/textDate"
             android:layout_marginTop="@dimen/smallMargin"
             app:layout_constraintEnd_toEndOf="parent"

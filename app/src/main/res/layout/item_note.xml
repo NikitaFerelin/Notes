@@ -51,6 +51,7 @@
                 tools:text="My name is Nichita i am pro deeveloper and i want to join to Yandex Team...My name is Nichita i am pro deeveloper and i want to join to Yandex Team...My name is Nichita i am pro deeveloper and i want to join to Yandex Team...My name is Nichita i am pro deeveloper and i want to join to Yandex Team...My name is Nichita i am pro deeveloper and i want to join to Yandex Team...My name is Nichita i am pro deeveloper and i want to join to Yandex Team...My name is Nichita i am pro deeveloper and i want to join to Yandex Team...My name is Nichita i am pro deeveloper and i want to join to Yandex Team...My name is Nichita i am pro deeveloper and i want to join to Yandex Team...My name is Nichita i am pro deeveloper and i want to join to Yandex Team..." />
 
             <TextView
+                android:id="@+id/textViewDate"
                 style="@style/textDate"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="@dimen/standardMargin"
@@ -63,6 +64,7 @@
                 tools:text="12 yanvaria sego goda" />
 
             <ImageView
+                android:id="@+id/imageViewColorIndicator"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginEnd="16dp"
