@@ -28,6 +28,8 @@ interface CreateMvpView : AppMvpView {
 
     fun setSelectedColor(color: Int)
 
+    fun setReminderTime(time: String)
+
     fun changeIconConstraintsToDefault()
 
     fun changeIconConstraintsToRed()
@@ -35,6 +37,10 @@ interface CreateMvpView : AppMvpView {
     fun changeIconConstraintsToGray()
 
     fun changeIconConstraintsToOrange()
+
+    fun showDatePickerDialog(year: Int, month: Int, day: Int)
+
+    fun showTimePickerDialog(hour: Int, minute: Int)
 
     fun dismiss()
 }

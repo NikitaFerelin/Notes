@@ -3,7 +3,7 @@ package com.example
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import com.example.provider.RepTestingDataProvider
+import com.example.provider.TestDataProvider
 import com.ferelin.repository.db.AppDataManager
 import com.ferelin.repository.db.DataManagerHelper
 import com.ferelin.repository.db.prefs.AppPreferences
@@ -29,7 +29,7 @@ class DataManagerHelperTest {
     private lateinit var mDatabase: NotesDb
     private lateinit var mDataManagerHelper: DataManagerHelper
 
-    private val mTestNote = RepTestingDataProvider().defaultNote
+    private val mTestNote = TestDataProvider().defaultNote
 
     @Before
     fun setUp() {
@@ -42,7 +42,7 @@ class DataManagerHelperTest {
 
     @Test
     fun successResponse(): Unit = runBlocking {
-        mDataManagerHelper.saveLastNotePreferences(mTestNote.title, mTestNote.content, mTestNote.color)
+        mDataManagerHelper.saveLastNotePreferences(mTestNote.title, mTestNote.content, mTestNote.color, mTestNote.time)
         mDataManagerHelper.getLastNote().first().also {
             Assert.assertEquals(true, it is Response.Success)
 
@@ -50,6 +50,7 @@ class DataManagerHelperTest {
             Assert.assertEquals(mTestNote.title, note.title)
             Assert.assertEquals(mTestNote.content, note.content)
             Assert.assertEquals(mTestNote.color, note.color)
+            Assert.assertEquals(mTestNote.time, note.time)
         }
     }
 

@@ -2,7 +2,7 @@ package com.example
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import com.example.provider.RepTestingDataProvider
+import com.example.provider.TestDataProvider
 import com.ferelin.repository.db.prefs.AppPreferences
 import com.ferelin.repository.db.prefs.PreferencesHelper
 import kotlinx.coroutines.flow.first
@@ -20,7 +20,7 @@ class PreferencesHelperTest {
 
     private lateinit var mPreferencesHelper: PreferencesHelper
 
-    private val mTestNote = RepTestingDataProvider().defaultNote
+    private val mTestNote = TestDataProvider().defaultNote
 
     @Before
     fun setUp() {
@@ -30,11 +30,12 @@ class PreferencesHelperTest {
 
     @Test
     fun saveAndGetNote(): Unit = runBlocking {
-        mPreferencesHelper.saveLastNotePreferences(mTestNote.title, mTestNote.content, mTestNote.color)
+        mPreferencesHelper.saveLastNotePreferences(mTestNote.title, mTestNote.content, mTestNote.color, mTestNote.time)
         mPreferencesHelper.getLastNotePreferences().first().also {
             Assert.assertEquals(mTestNote.title, it[AppPreferences.TITLE_BUNDLE_KEY]!!)
             Assert.assertEquals(mTestNote.content, it[AppPreferences.CONTENT_BUNDLE_KEY]!!)
             Assert.assertEquals(mTestNote.color, it[AppPreferences.COLOR_BUNDLE_KEY]!!)
+            Assert.assertEquals(mTestNote.time, it[AppPreferences.TIME_BUNDLE_KEY]!!)
         }
     }
 
@@ -44,6 +45,7 @@ class PreferencesHelperTest {
             Assert.assertEquals("", it[AppPreferences.TITLE_BUNDLE_KEY]!!)
             Assert.assertEquals("", it[AppPreferences.CONTENT_BUNDLE_KEY]!!)
             Assert.assertEquals("", it[AppPreferences.COLOR_BUNDLE_KEY]!!)
+            Assert.assertEquals("", it[AppPreferences.TIME_BUNDLE_KEY]!!)
         }
     }
 

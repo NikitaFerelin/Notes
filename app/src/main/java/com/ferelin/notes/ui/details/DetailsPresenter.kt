@@ -14,11 +14,16 @@ class DetailsPresenter(private val mContext: Context) : MvpPresenter<DetailsMvpV
 
     fun onViewPrepared(args: DetailsFragmentArgs) {
         mResponseKey = args.responseKey
+        val note = args.note
         viewState.apply {
-            setContent(args.content)
-            setTitle(args.title)
-            setDate(args.date)
-            setColor(adaptColor(args.color))
+            setContent(note.content)
+            setTitle(note.title)
+            setDate(note.date)
+            setColor(adaptColor(note.color))
+
+            if (note.time.isEmpty()) {
+                hideReminder()
+            } else setReminder(note.time)
         }
     }
 

@@ -1,11 +1,14 @@
 package com.ferelin.notes.ui.create
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintSet
+import android.widget.DatePicker
+import android.widget.TimePicker
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
@@ -15,6 +18,7 @@ import androidx.transition.Slide
 import com.ferelin.notes.R
 import com.ferelin.notes.base.BaseFragment
 import com.ferelin.notes.databinding.FragmentCreateNoteBinding
+import com.ferelin.notes.utilits.ConstraintsSwitcher
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.transition.MaterialContainerTransform
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +27,7 @@ import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import moxy.presenter.ProvidePresenterTag
 
-class CreateFragment : BaseFragment(), CreateMvpView {
+class CreateFragment : BaseFragment(), CreateMvpView, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     @InjectPresenter
     lateinit var mPresenter: CreatePresenter
@@ -69,6 +73,10 @@ class CreateFragment : BaseFragment(), CreateMvpView {
 
     override fun setSelectedColor(color: Int) {
         mBinding.viewColorIndicator.setBackgroundColor(color)
+    }
+
+    override fun setReminderTime(time: String) {
+        mBinding.textViewReminderTime.text = time
     }
 
     override fun lockAcceptButton() {
@@ -117,21 +125,38 @@ class CreateFragment : BaseFragment(), CreateMvpView {
         super.showKeyboard(mBinding.editTextContent)
     }
 
+    override fun showDatePickerDialog(year: Int, month: Int, day: Int) {
+        DatePickerDialog(requireContext(), R.style.dialogPickers, this, year, month, day).show()
+    }
+
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        mPresenter.gotResultFromDatePicker(year, month, dayOfMonth)
+    }
+
+    override fun showTimePickerDialog(hour: Int, minute: Int) {
+        TimePickerDialog(requireContext(), R.style.dialogPickers, this, hour, minute, true).show()
+    }
+
+    override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
+        mPresenter.gotResultFromTimePicker(hourOfDay, minute)
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         lifecycleScope.launch(Dispatchers.IO) {
-            mPresenter.onSaveInstanceState(mBinding.editTextTitle.text, mBinding.editTextContent.text)
+            mPresenter.onSaveInstanceState(mBinding.editTextTitle.text,
+                mBinding.editTextContent.text,
+                mBinding.textViewReminderTime.text)
         }
     }
 
     private fun initSetUp() {
-        setupTransitions()
-        setupEditFields()
-        setupImageViews()
-        setupBottomSheet()
+        setUpTransitions()
+        setUpClickListeners()
+        setUpBottomSheet()
     }
 
-    private fun setupTransitions() {
+    private fun setUpTransitions() {
         enterTransition = MaterialContainerTransform().apply {
             startView = requireParentFragment().requireView().findViewById(R.id.fab)
             endView = mBinding.root
@@ -145,7 +170,7 @@ class CreateFragment : BaseFragment(), CreateMvpView {
         }
     }
 
-    private fun setupEditFields() {
+    private fun setUpClickListeners() {
         mBinding.apply {
             editTextTitle.addTextChangedListener {
                 mPresenter.onTextChanged(editTextContent.text, it, mIsAcceptBtnLocked)
@@ -153,23 +178,21 @@ class CreateFragment : BaseFragment(), CreateMvpView {
             editTextContent.addTextChangedListener {
                 mPresenter.onTextChanged(it, editTextTitle.text, mIsAcceptBtnLocked)
             }
-        }
-    }
-
-    private fun setupImageViews() {
-        mBinding.apply {
             imageViewAccept.setOnClickListener {
                 lifecycleScope.launch(Dispatchers.Main) {
                     mPresenter.onAcceptBtnClicked(mIsAcceptBtnLocked, editTextTitle.text, editTextContent.text)
                 }
             }
-            imageViewBack.setOnClickListener {
+            imageViewButtonBack.setOnClickListener {
                 mPresenter.onBackBtnClicked()
+            }
+            rootTimePicker.setOnClickListener {
+                mPresenter.onAddReminderClicked()
             }
         }
     }
 
-    private fun setupBottomSheet() {
+    private fun setUpBottomSheet() {
         mBottomSheetBehavior = BottomSheetBehavior.from(mBinding.rootBottomSheet.root)
 
         mBinding.rootBottomSheet.apply {
@@ -192,13 +215,6 @@ class CreateFragment : BaseFragment(), CreateMvpView {
     }
 
     private fun switchBottomSheetIconTo(newOwner: Int) {
-        ConstraintSet().apply {
-            clone(mBinding.rootBottomSheet.root)
-            connect(R.id.imageViewAcceptIcon, ConstraintSet.TOP, newOwner, ConstraintSet.TOP)
-            connect(R.id.imageViewAcceptIcon, ConstraintSet.BOTTOM, newOwner, ConstraintSet.BOTTOM)
-            connect(R.id.imageViewAcceptIcon, ConstraintSet.START, newOwner, ConstraintSet.START)
-            connect(R.id.imageViewAcceptIcon, ConstraintSet.END, newOwner, ConstraintSet.END)
-            applyTo(mBinding.rootBottomSheet.root)
-        }
+        ConstraintsSwitcher.switchOwner(mBinding.rootBottomSheet.root, R.id.imageViewAcceptIcon, newOwner)
     }
 }

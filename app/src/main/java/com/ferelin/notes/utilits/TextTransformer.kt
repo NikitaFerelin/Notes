@@ -16,7 +16,6 @@ object TextTransformer {
                 tempContent = "$tempTitle. $tempContent"
                 tempTitle = "${tempContent.substring(0, 10)}..."
             }
-            // TODO FIX чтобы не попадала пустая строка сюда
             tempTitle.trim().isEmpty() && tempContent.trim().isEmpty() -> tempContent = R.string.hintEmptyNote.toString()
         }
 

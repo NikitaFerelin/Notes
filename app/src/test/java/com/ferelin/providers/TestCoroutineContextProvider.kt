@@ -4,7 +4,7 @@ import com.ferelin.notes.utilits.CoroutineContextProvider
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
 
-class TestingCoroutineContextProvider : CoroutineContextProvider() {
+class TestCoroutineContextProvider : CoroutineContextProvider() {
 
     override val MAIN: CoroutineContext
         get() = Dispatchers.Unconfined

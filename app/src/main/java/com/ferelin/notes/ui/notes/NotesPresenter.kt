@@ -65,7 +65,8 @@ class NotesPresenter(
         val title = bundle[CreatePresenter.NOTE_TITLE_KEY] as String
         val content = bundle[CreatePresenter.NOTE_CONTENT_KEY] as String
         val color = bundle[CreatePresenter.NOTE_COLOR_KEY] as String
-        val newNote = Note(title = title, content = content, color = color)
+        val time = bundle[CreatePresenter.NOTE_TIME_KEY] as String
+        val newNote = Note(title = title, content = content, color = color, time = time)
 
         viewState.apply {
             addNote(newNote)
@@ -82,6 +83,6 @@ class NotesPresenter(
     }
 
     fun onNoteClicked(holder: NotesAdapter.NoteViewHolder, note: Note) {
-        viewState.replaceWithDetailFragment(holder, note.title, note.content, note.date, note.color)
+        viewState.replaceWithDetailFragment(holder, note)
     }
 }

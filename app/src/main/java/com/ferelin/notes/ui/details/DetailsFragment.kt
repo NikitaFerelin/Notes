@@ -43,7 +43,7 @@ class DetailsFragment : BaseFragment(), DetailsMvpView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            imageViewBack.setOnClickListener {
+            imageViewButtonBack.setOnClickListener {
                 mPresenter.onBackBtnClicked()
             }
             imageViewDelete.setOnClickListener {
@@ -70,11 +70,19 @@ class DetailsFragment : BaseFragment(), DetailsMvpView {
     }
 
     override fun setDate(date: String) {
-        mBinding.textViewDate.text = date
+        mBinding.textViewReminderTime.text = date
     }
 
     override fun setColor(color: Int) {
         mBinding.viewColorIndicator.setBackgroundColor(color)
+    }
+
+    override fun setReminder(time: String) {
+        mBinding.textViewReminderTime.text = time
+    }
+
+    override fun hideReminder() {
+        mBinding.rootReminder.visibility = View.GONE
     }
 
     private fun setupTransitions() {

@@ -22,20 +22,8 @@
             android:name="responseKey"
             app:argType="string" />
         <argument
-            android:name="title"
-            app:argType="string" />
-        <argument
-            android:name="content"
-            app:argType="string" />
-        <argument
-            android:name="date"
-            app:argType="string" />
-        <argument
-            android:name="color"
-            app:argType="string" />
-        <argument
-            android:name="transitionName"
-            app:argType="string" />
+            android:name="note"
+            app:argType="com.ferelin.repository.model.Note" />
     </fragment>
 
     <fragment

@@ -3,7 +3,7 @@ package com.example
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import com.example.provider.RepTestingDataProvider
+import com.example.provider.TestDataProvider
 import com.ferelin.repository.db.room.AppNotesDb
 import com.ferelin.repository.db.room.NotesDb
 import com.ferelin.repository.db.room.NotesDbHelper
@@ -28,7 +28,7 @@ class RoomHelperTest {
     private lateinit var mDatabase: NotesDb
     private lateinit var mDatabaseHelper: NotesDbHelper
 
-    private val mTestNote = RepTestingDataProvider().defaultNote
+    private val mTestNote = TestDataProvider().defaultNote
     private val mTestDispatcher = TestCoroutineDispatcher()
 
     @Before
@@ -50,6 +50,7 @@ class RoomHelperTest {
             Assert.assertEquals(note.title, mTestNote.title)
             Assert.assertEquals(note.content, mTestNote.content)
             Assert.assertEquals(note.color, mTestNote.color)
+            Assert.assertEquals(note.time, mTestNote.time)
         }
     }
 
@@ -60,6 +61,7 @@ class RoomHelperTest {
             Assert.assertEquals(1, it.size)
             Assert.assertEquals(mTestNote.title, it[0].title)
             Assert.assertEquals(mTestNote.content, it[0].content)
+            Assert.assertEquals(mTestNote.time, it[0].time)
         }
     }
 

@@ -66,4 +66,9 @@
         <item name="android:layout_margin">16dp</item>
     </style>
 
+    <style name="dialogPickers" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorControlActivated">@color/orange</item>
+        <item name="android:colorAccent">@color/gray</item>
+    </style>
+
 </resources>

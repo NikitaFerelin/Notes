@@ -16,7 +16,11 @@ interface DetailsMvpView : AppMvpView {
 
     fun setColor(color: Int)
 
+    fun setReminder(time: String)
+
     fun setResult(bundle: Bundle, responseKey: String)
+
+    fun hideReminder()
 
     fun dismiss()
 }

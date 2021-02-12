@@ -6,8 +6,8 @@ import androidx.test.core.app.ApplicationProvider
 import com.ferelin.notes.ui.create.CreateMvpView
 import com.ferelin.notes.ui.create.CreatePresenter
 import com.ferelin.notes.utilits.ColorTransformer
-import com.ferelin.providers.AppTestingDataProvider
-import com.ferelin.providers.TestingCoroutineContextProvider
+import com.ferelin.providers.TestCoroutineContextProvider
+import com.ferelin.providers.TestDataProvider
 import com.ferelin.repository.db.AppDataManager
 import com.ferelin.repository.db.response.Response
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -32,15 +32,15 @@ class CreatePresenterTest {
     private val mView: CreateMvpView = mock(CreateMvpView::class.java)
 
     private lateinit var mPresenter: CreatePresenter
-    private lateinit var mTestDataProvider: AppTestingDataProvider
+    private lateinit var mTestDataProvider: TestDataProvider
 
     @Before
     fun setUp() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        mPresenter = CreatePresenter(context, mDataManager, TestingCoroutineContextProvider()).apply {
+        mPresenter = CreatePresenter(context, mDataManager, TestCoroutineContextProvider()).apply {
             attachView(mView)
         }
-        mTestDataProvider = AppTestingDataProvider(context)
+        mTestDataProvider = TestDataProvider(context)
     }
 
     @Test
@@ -62,6 +62,7 @@ class CreatePresenterTest {
         verify(mView, times(1)).setNote(note.title, note.content)
         verify(mView, times(1)).setSelectedColor(ColorTransformer.fromStringToInt(note.color))
         verify(mView, times(1)).changeIconConstraintsToRed()
+        verify(mView, times(1)).setReminderTime(note.time)
     }
 
     @Test
@@ -76,6 +77,7 @@ class CreatePresenterTest {
         verify(mView, times(1)).showKeyboard()
         verify(mView, times(0)).setNote("", "")
         verify(mView, times(0)).setSelectedColor(0)
+        verify(mView, times(0)).setReminderTime("")
         verify(mView, times(0)).changeIconConstraintsToDefault()
         verify(mView, times(0)).changeIconConstraintsToRed()
         verify(mView, times(0)).changeIconConstraintsToOrange()
@@ -160,12 +162,13 @@ class CreatePresenterTest {
     fun onSaveInstanceState() = runBlocking {
         val title = mTestDataProvider.defaultNote.title
         val content = mTestDataProvider.defaultNote.content
+        val time = mTestDataProvider.defaultNote.time
         val color = mTestDataProvider.defaultColor
         val editableTitle = mTestDataProvider.editableTitle
         val editableContent = mTestDataProvider.editableContent
 
-        mPresenter.onSaveInstanceState(editableTitle, editableContent)
-        verify(mDataManager, times(1)).saveLastNotePreferences(title, content, color)
+        mPresenter.onSaveInstanceState(editableTitle, editableContent, time)
+        verify(mDataManager, times(1)).saveLastNotePreferences(title, content, color, time)
     }
 
     @Test

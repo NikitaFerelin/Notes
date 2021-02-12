@@ -15,9 +15,13 @@
     <string name="descriptionFab">Click to create new note</string>
     <string name="descriptionIconDelete">Click to delete current note</string>
     <string name="descriptionSearch">Click to search notes</string>
+    <string name="descriptionChannel">Note notifications</string>
 
     <!-- Other -->
     <string name="transitionDetailsFrgCardView">cardViewDetailsTransitionName</string>
     <string name="notificationEmptyNote">Note is empty</string>
+    <string name="descriptionTimePicker">Image view time picker</string>
+    <string name="hintAddReminder">Add reminder</string>
+    <string name="hintChannelName">Notes</string>
 
 </resources>

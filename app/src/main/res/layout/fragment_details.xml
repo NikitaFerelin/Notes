@@ -13,12 +13,44 @@
         android:padding="@dimen/largeMargin">
 
         <ImageView
-            android:id="@+id/imageViewBack"
+            android:id="@+id/imageViewButtonBack"
             style="@style/standardIcon"
             android:contentDescription="@string/descriptionIconBack"
             android:src="@drawable/ic_arrow_back"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/rootReminder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/smallMargin"
+            app:layout_constraintBottom_toBottomOf="@id/imageViewButtonBack"
+            app:layout_constraintEnd_toStartOf="@id/imageViewDelete"
+            app:layout_constraintStart_toEndOf="@id/imageViewButtonBack"
+            app:layout_constraintTop_toTopOf="@id/imageViewButtonBack">
+
+            <ImageView
+                android:id="@+id/imageViewClock"
+                style="@style/standardIcon"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:contentDescription="@string/descriptionTimePicker"
+                android:src="@drawable/ic_clock"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textViewReminderTime"
+                style="@style/textDate"
+                android:layout_marginStart="@dimen/standardMargin"
+                android:text="@string/hintAddReminder"
+                app:layout_constraintBottom_toBottomOf="@id/imageViewClock"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/imageViewClock"
+                app:layout_constraintTop_toTopOf="@id/imageViewClock" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
             android:id="@+id/imageViewDelete"

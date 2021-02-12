@@ -14,13 +14,7 @@ interface NotesMvpView : AppMvpView, AdaptiveClickListener {
 
     fun replaceWithCreateFragment()
 
-    fun replaceWithDetailFragment(
-        holder: NotesAdapter.NoteViewHolder,
-        title: String,
-        content: String,
-        date: String,
-        color: String,
-    )
+    fun replaceWithDetailFragment(holder: NotesAdapter.NoteViewHolder, note: Note)
 
     fun setNotes(items: List<Note>)
 

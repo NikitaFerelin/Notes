@@ -6,8 +6,8 @@ import androidx.test.core.app.ApplicationProvider
 import com.ferelin.notes.ui.notes.NotesAdapter
 import com.ferelin.notes.ui.notes.NotesMvpView
 import com.ferelin.notes.ui.notes.NotesPresenter
-import com.ferelin.providers.AppTestingDataProvider
-import com.ferelin.providers.TestingCoroutineContextProvider
+import com.ferelin.providers.TestCoroutineContextProvider
+import com.ferelin.providers.TestDataProvider
 import com.ferelin.repository.db.AppDataManager
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -28,13 +28,13 @@ class NotesPresenterTest {
     private val mView: NotesMvpView = Mockito.mock(NotesMvpView::class.java)
 
     private lateinit var mPresenter: NotesPresenter
-    private lateinit var mTestDataProvider: AppTestingDataProvider
+    private lateinit var mTestDataProvider: TestDataProvider
 
     @Before
     fun setUp() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        mTestDataProvider = AppTestingDataProvider(context)
-        mPresenter = NotesPresenter(mDataManager, TestingCoroutineContextProvider()).apply {
+        mTestDataProvider = TestDataProvider(context)
+        mPresenter = NotesPresenter(mDataManager, TestCoroutineContextProvider()).apply {
             attachView(mView)
         }
     }
@@ -125,11 +125,6 @@ class NotesPresenterTest {
         val holder = Mockito.mock(NotesAdapter.NoteViewHolder::class.java)
 
         mPresenter.onNoteClicked(holder, note)
-        Mockito.verify(mView, Mockito.times(1))
-            .replaceWithDetailFragment(holder,
-                note.title,
-                note.content,
-                note.date,
-                note.color)
+        Mockito.verify(mView, Mockito.times(1)).replaceWithDetailFragment(holder, note)
     }
 }

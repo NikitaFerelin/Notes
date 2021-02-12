@@ -3,7 +3,7 @@ package com.ferelin.utilits
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.ferelin.notes.ui.notes.NotesFilter
-import com.ferelin.providers.AppTestingDataProvider
+import com.ferelin.providers.TestDataProvider
 import com.ferelin.repository.model.Note
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
@@ -18,14 +18,14 @@ import org.robolectric.RobolectricTestRunner
 class NotesFilterText {
 
     private lateinit var mNotesFilter: NotesFilter
-    private lateinit var mTestDataProvider: AppTestingDataProvider
+    private lateinit var mTestDataProvider: TestDataProvider
 
     private var mTestList = emptyList<Note>()
 
     @Before
     fun setUp() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        mTestDataProvider = AppTestingDataProvider(context)
+        mTestDataProvider = TestDataProvider(context)
         mNotesFilter = NotesFilter(mTestDataProvider.defaultNotesList) {
             mTestList = it.toList()
         }

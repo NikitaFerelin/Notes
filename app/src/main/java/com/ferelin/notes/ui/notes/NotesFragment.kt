@@ -59,23 +59,11 @@ class NotesFragment : BaseFragment(), NotesMvpView, Filterable {
         initSetUp()
     }
 
-    override fun replaceWithDetailFragment(
-        holder: NotesAdapter.NoteViewHolder,
-        title: String,
-        content: String,
-        date: String,
-        color: String,
-    ) {
+    override fun replaceWithDetailFragment(holder: NotesAdapter.NoteViewHolder, note: Note) {
         val extras = FragmentNavigatorExtras(
             holder.binding.rootCardView to requireContext().resources.getString(R.string.transitionDetailsFrgCardView)
         )
-        val action = NotesFragmentDirections.actionNotesFragmentToDetailsFragment(
-            sDeleteNoteResponseKey,
-            title,
-            content,
-            date,
-            color,
-            holder.binding.rootCardView.transitionName)
+        val action = NotesFragmentDirections.actionNotesFragmentToDetailsFragment(sDeleteNoteResponseKey, note)
         findNavController().navigate(action, extras)
     }
 

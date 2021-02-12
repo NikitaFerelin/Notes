@@ -19,13 +19,14 @@ open class AppDataManager @Inject constructor(
         val title = it[AppPreferences.TITLE_BUNDLE_KEY].toString()
         val content = it[AppPreferences.CONTENT_BUNDLE_KEY].toString()
         val color = it[AppPreferences.COLOR_BUNDLE_KEY].toString()
+        val time = it[AppPreferences.TIME_BUNDLE_KEY].toString()
 
         if (title.isEmpty()) Response.Failed()
-        else Response.Success(Note(title = title, content = content, color = color))
+        else Response.Success(Note(title = title, content = content, color = color, time = time))
     }
 
-    override suspend fun saveLastNotePreferences(title: String, content: String, color: String) {
-        mPreferencesHelper.saveLastNotePreferences(title, content, color)
+    override suspend fun saveLastNotePreferences(title: String, content: String, color: String, time: String) {
+        mPreferencesHelper.saveLastNotePreferences(title, content, color, time)
     }
 
     override suspend fun getLastNotePreferences(): Flow<Bundle> {
